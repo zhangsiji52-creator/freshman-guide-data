@@ -2281,5 +2281,18 @@
         ]
       ]
     }
-  }
+  },
+  "sources": [
+    {
+      "id": "transfer-major-pdf",
+      "name": "湖北中医药大学普通全日制本科生校内转专业实施办法（中医教字〔2026〕8号）",
+      "url": "https://raw.githubusercontent.com/zhangsiji52-creator/freshman-guide-data/main/%E8%BD%AC%E4%B8%93%E4%B8%9A%E5%AE%9E%E6%96%BD%E5%8A%9E%E6%B3%952026.pdf",
+      "fileName": "转专业实施办法2026.pdf",
+      "kind": "官方文件",
+      "visible": "官方PDF文件，可直接下载查看。",
+      "found": "2026年转专业实施办法全文，含申请条件、不能转专业的情况、办理流程等。",
+      "use": "作为转专业政策的官方文件下载入口。",
+      "valid": "官方文件，2026年最新版。"
+    }
+  ]
 }

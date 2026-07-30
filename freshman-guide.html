@@ -1382,8 +1382,8 @@
       douyin: "bxq3447226818"
     };
     const esc = v => String(v ?? "").replace(/[&<>"']/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[ch]));
-    // 支持 **文字** 加粗 + URL 自动转可点击链接
-    const escFmt = v => esc(v).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noreferrer" style="color:var(--brand-blue);text-decoration:underline;word-break:break-all">$1</a>');
+    // 支持 **文字** 加粗 + URL 自动转可点击链接 + 换行符转<br>
+    const escFmt = v => esc(v).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>').replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noreferrer" style="color:var(--brand-blue);text-decoration:underline;word-break:break-all">$1</a>');
     function setGateMessage(message) {
       const target = el("accessGateError");
       if (target) target.textContent = message || "";

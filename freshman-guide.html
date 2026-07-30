@@ -1,0 +1,2041 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>湖中医新生速查</title>
+  <!-- Design reference: Tabler clarity + TailAdmin blue-white dashboard polish -->
+  <style>
+    :root {
+      --brand-blue: #1556d6;
+      --brand-blue-dark: #0a2f78;
+      --brand-navy: #071b46;
+      --brand-blue-soft: #eaf2ff;
+      --school-red: #c51f32;
+      --paper: #ffffff;
+      --bg: #f7f8fa;
+      --ink: #101828;
+      --muted: #667085;
+      --line: rgba(16,24,40,.10);
+      --shadow: 0 20px 60px rgba(21,86,214,.13);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+    * { box-sizing: border-box; }
+    button, a, .qa-card, .feature-item, .scenario, .source-card, .chip, .close, .gate-btn { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+      background: var(--bg);
+      padding-bottom: calc(86px + var(--safe-bottom));
+    }
+    body.access-locked { overflow: hidden; }
+    body.modal-open { overflow: hidden; }
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+    a { color: inherit; }
+    .app-shell {
+      width: min(520px, 100%);
+      min-height: 100vh;
+      margin: 0 auto;
+    }
+    .nav-bar, .top {
+      height: 60px;
+      padding: 0 15px;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255,255,255,.96);
+      backdrop-filter: blur(18px);
+      box-shadow: 0 2px 8px rgba(0,0,0,.03);
+    }
+    .page-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: #333;
+    }
+    .brand-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+    }
+    .official-emblem {
+      width: 38px;
+      height: 38px;
+      border-radius: 14px;
+      object-fit: cover;
+      background: #fff;
+      padding: 4px;
+      border: 1px solid rgba(197,31,50,.18);
+      box-shadow: 0 5px 15px rgba(0,0,0,.08);
+    }
+    .mini {
+      display: inline-flex;
+      padding: 6px 10px;
+      border-radius: 999px;
+      color: var(--brand-blue);
+      background: #fff;
+      border: 1px solid rgba(21,86,214,.14);
+      font-size: 12px;
+      font-weight: 800;
+    }
+    h1 { margin: 0; font-size: 28px; letter-spacing: -.045em; line-height: 1.08; color: var(--brand-navy); }
+    .subtitle { margin: 7px 0 0; color: #5f6b7a; font-size: 14px; line-height: 1.6; }
+    .search-box, .floating-search {
+      margin-top: 14px;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 12px 13px;
+      background: var(--paper);
+      border: 1px solid rgba(21,86,214,.12);
+      border-radius: 18px;
+      box-shadow: 0 12px 30px rgba(21,86,214,.09);
+    }
+    .search-box input, .floating-search input {
+      flex: 1;
+      min-width: 0;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: var(--ink);
+      font-size: 15px;
+    }
+    .page { display: none; padding: 15px 20px 26px; }
+    .page.active { display: block; }
+    .miniapp-hero {
+      border-radius: 16px;
+      background: #fff;
+      box-shadow: 0 4px 12px rgba(0,0,0,.06);
+      padding: 18px;
+      overflow: hidden;
+      position: relative;
+    }
+    .miniapp-hero::after {
+      content: "";
+      position: absolute;
+      right: -26px;
+      top: -30px;
+      width: 120px;
+      height: 120px;
+      border-radius: 999px;
+      background: rgba(21,86,214,.08);
+    }
+    .miniapp-hero h2 {
+      position: relative;
+      margin: 0;
+      color: var(--brand-navy);
+      font-size: 24px;
+      line-height: 1.14;
+      letter-spacing: -.045em;
+    }
+    .miniapp-hero p {
+      position: relative;
+      margin: 8px 0 0;
+      color: #667085;
+      line-height: 1.6;
+      font-size: 14px;
+    }
+    .hero-orbit {
+      position: relative;
+      padding: 1px;
+      border-radius: 30px;
+      background: linear-gradient(135deg, rgba(21,86,214,.28), rgba(197,31,50,.24), rgba(255,255,255,.85));
+      box-shadow: var(--shadow);
+    }
+    .hero-card {
+      padding: 22px;
+      border-radius: 29px;
+      background:
+        radial-gradient(circle at 88% 0%, rgba(255,255,255,.22), transparent 135px),
+        linear-gradient(135deg, rgba(7,27,70,.98), rgba(21,86,214,.94)),
+        var(--brand-blue);
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-card::after {
+      content: "";
+      position: absolute;
+      right: -38px;
+      top: -52px;
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.12);
+    }
+    .hero-card h2 {
+      position: relative;
+      margin: 0 0 8px;
+      font-size: 24px;
+      letter-spacing: -.04em;
+    }
+    .hero-card p {
+      position: relative;
+      margin: 0;
+      color: rgba(255,255,255,.84);
+      line-height: 1.65;
+      font-size: 14px;
+    }
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 22px 0 10px;
+    }
+    .section-head h2 {
+      margin: 0;
+      color: var(--brand-blue-dark);
+      font-size: 20px;
+      letter-spacing: -.035em;
+    }
+    .section-head span { color: var(--muted); font-size: 12px; }
+    .scenario-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      row-gap: 20px;
+      column-gap: 10px;
+      padding: 20px 10px;
+      border-radius: 16px;
+      background: #fff;
+      box-shadow: 0 2px 10px rgba(0,0,0,.02);
+    }
+    .feature-item {
+      border: 0;
+      background: transparent;
+      min-height: 72px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 8px;
+      color: #555;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .icon-box {
+      width: 46px;
+      height: 46px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      color: #fff;
+      font-size: 20px;
+      box-shadow: 0 4px 8px rgba(0,0,0,.10);
+    }
+    .color-blue { background: #4a90e2; }
+    .color-indigo { background: #722ed1; }
+    .color-teal { background: #13c2c2; }
+    .color-purple { background: #9254de; }
+    .color-green { background: #52c41a; }
+    .color-orange { background: #fa8c16; }
+    .color-red { background: #ff4d4f; }
+    .color-brown { background: #8d6e63; }
+    .color-grey { background: #8c8c8c; }
+    .guide-detail {
+      display: grid;
+      gap: 12px;
+    }
+    .guide-cover {
+      border-radius: 24px;
+      padding: 20px;
+      background: linear-gradient(135deg, #ffffff, #edf4ff);
+      border: 1px solid rgba(21,86,214,.10);
+      box-shadow: 0 10px 28px rgba(16,24,40,.06);
+    }
+    .guide-cover h2 { margin: 0; color: var(--brand-navy); font-size: 25px; letter-spacing: -.045em; }
+    .guide-cover p { margin: 8px 0 0; color: #667085; line-height: 1.65; font-size: 14px; }
+    .guide-article {
+      border-radius: 26px;
+      background: #fff;
+      border: 1px solid rgba(21,86,214,.08);
+      box-shadow: 0 16px 42px rgba(16,24,40,.07);
+      overflow: hidden;
+    }
+    .article-head {
+      padding: 22px 20px 16px;
+      background:
+        linear-gradient(180deg, rgba(234,242,255,.92), rgba(255,255,255,0)),
+        #fff;
+    }
+    .article-kicker {
+      display: inline-flex;
+      margin-bottom: 10px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: var(--brand-blue-soft);
+      color: var(--brand-blue);
+      font-size: 12px;
+      font-weight: 900;
+    }
+    .article-head h2 { margin: 0; color: var(--brand-navy); font-size: 26px; letter-spacing: -.045em; line-height: 1.15; }
+    .article-body {
+      padding: 2px 20px 20px;
+    }
+    .article-section {
+      padding: 16px 0;
+      border-bottom: 1px solid rgba(16,24,40,.08);
+    }
+    .article-section:last-child { border-bottom: 0; }
+    .article-section h3 { margin: 0 0 9px; color: var(--brand-blue-dark); font-size: 19px; letter-spacing: -.025em; }
+    .article-section p { margin: 0 0 10px; color: #344054; font-size: 15px; line-height: 1.86; }
+    .article-section ul { margin: 0; padding-left: 18px; }
+    .article-section li { margin: 7px 0; color: #344054; font-size: 15px; line-height: 1.78; }
+    .qa-section {
+      border-radius: 20px;
+      padding: 15px;
+      margin-top: 12px;
+      background: #fff;
+      border: 1px solid rgba(21,86,214,.10);
+      box-shadow: 0 10px 26px rgba(16,24,40,.05);
+    }
+    .qa-section .question-title {
+      margin: 0;
+      display: grid;
+      gap: 4px;
+    }
+    .question-no {
+      color: var(--brand-blue);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: .02em;
+    }
+    .question-text {
+      color: var(--brand-blue-dark);
+      font-size: 17px;
+      font-weight: 900;
+      line-height: 1.38;
+    }
+    .answer-label {
+      margin: 10px 0 6px;
+      color: #667085;
+      font-size: 12px;
+      font-weight: 900;
+    }
+    .answer-list {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .answer-list li {
+      display: grid;
+      grid-template-columns: 24px 1fr;
+      gap: 7px;
+      margin: 0;
+      color: #344054;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+    .answer-index {
+      color: var(--brand-blue);
+      font-weight: 900;
+    }
+    .answer-text {
+      margin: 0;
+      color: #344054;
+      font-size: 14px;
+      line-height: 1.78;
+    }
+    .list-grid {
+      display: grid;
+      gap: 10px;
+      margin: 14px 0 4px;
+    }
+    .list-card {
+      border-radius: 18px;
+      padding: 14px;
+      background: #f8fbff;
+      border: 1px solid rgba(21,86,214,.10);
+    }
+    .list-card h3 {
+      margin: 0 0 10px;
+      color: var(--brand-blue-dark);
+      font-size: 17px;
+      letter-spacing: -.02em;
+    }
+    .list-card ul {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .list-card li {
+      display: grid;
+      grid-template-columns: 18px 1fr;
+      gap: 8px;
+      margin: 0;
+      color: #344054;
+      font-size: 14px;
+      line-height: 1.55;
+    }
+    .list-card li::before {
+      content: "✓";
+      width: 18px;
+      height: 18px;
+      display: grid;
+      place-items: center;
+      border-radius: 7px;
+      background: var(--brand-blue-soft);
+      color: var(--brand-blue);
+      font-size: 11px;
+      font-weight: 900;
+      margin-top: 1px;
+    }
+    .payment-actions {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .payment-action {
+      border: 0;
+      border-radius: 18px;
+      padding: 16px 12px;
+      background: linear-gradient(135deg, var(--brand-blue), #2b72ff);
+      color: #fff;
+      box-shadow: 0 14px 28px rgba(21,86,214,.18);
+      text-align: left;
+      cursor: pointer;
+    }
+    .payment-action b {
+      display: block;
+      font-size: 16px;
+      letter-spacing: -.02em;
+      margin-bottom: 5px;
+    }
+    .payment-action span {
+      display: block;
+      font-size: 12px;
+      opacity: .88;
+      line-height: 1.45;
+    }
+    .article-note {
+      margin: 14px 0;
+      padding: 14px;
+      border-radius: 18px;
+      background: #fff8f6;
+      border: 1px solid rgba(197,31,50,.14);
+      color: #7a2d18;
+      line-height: 1.72;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .article-official-links {
+      margin-top: 16px;
+      padding: 15px;
+      border-radius: 18px;
+      background: #f8fbff;
+      border: 1px solid rgba(21,86,214,.12);
+    }
+    .article-official-links:empty { display: none; }
+    .article-official-links h3 { margin: 0 0 8px; color: var(--brand-blue-dark); font-size: 16px; }
+    .article-official-links h4 { margin: 8px 0 4px; color: #344054; font-size: 13px; }
+    .article-official-links a {
+      display: block;
+      margin-top: 7px;
+      border-radius: 14px;
+      padding: 10px 12px;
+      color: var(--brand-blue);
+      background: #fff;
+      border: 1px solid rgba(21,86,214,.14);
+      font-weight: 900;
+      font-size: 13px;
+      line-height: 1.45;
+      text-decoration: none;
+      word-break: break-all;
+    }
+    .article-ai-link {
+      width: 100%;
+      margin-top: 14px;
+      border: 0;
+      border-radius: 18px;
+      padding: 14px;
+      background: var(--brand-blue);
+      color: #fff;
+      font-weight: 900;
+      box-shadow: 0 12px 26px rgba(21,86,214,.18);
+    }
+    .detail-nav {
+      position: sticky;
+      top: 60px;
+      z-index: 18;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 10px;
+      margin: -15px -20px 14px;
+      padding: 10px 16px;
+      background: rgba(247,248,250,.96);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(16,24,40,.06);
+    }
+    .back-btn {
+      border: 0;
+      border-radius: 999px;
+      padding: 9px 12px;
+      color: var(--brand-blue);
+      background: #fff;
+      font-weight: 900;
+      box-shadow: 0 5px 14px rgba(16,24,40,.06);
+    }
+    .detail-nav-title {
+      text-align: center;
+      color: var(--brand-blue-dark);
+      font-weight: 900;
+      font-size: 15px;
+    }
+    body.detail-open .bottom-nav { display: none; }
+    .official-groups {
+      display: grid;
+      gap: 10px;
+    }
+    .official-group {
+      border-radius: 18px;
+      background: #fff;
+      padding: 14px;
+      border: 1px solid rgba(21,86,214,.08);
+    }
+    .official-group h3 { margin: 0 0 8px; color: var(--brand-blue-dark); font-size: 16px; }
+    .official-group a { display: block; color: var(--brand-blue); font-size: 13px; line-height: 1.7; word-break: break-all; }
+    .guide-steps, .guide-sections {
+      display: grid;
+      gap: 10px;
+    }
+    .step-card, .guide-block {
+      border-radius: 18px;
+      background: #fff;
+      padding: 15px;
+      border: 1px solid rgba(21,86,214,.08);
+      box-shadow: 0 6px 16px rgba(16,24,40,.04);
+    }
+    .step-card {
+      display: grid;
+      grid-template-columns: 32px 1fr;
+      gap: 10px;
+      align-items: start;
+    }
+    .step-num {
+      width: 32px;
+      height: 32px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      background: var(--brand-blue-soft);
+      color: var(--brand-blue);
+      font-weight: 900;
+      font-size: 13px;
+    }
+    .step-card h3, .guide-block h3 { margin: 0 0 6px; color: var(--brand-blue-dark); font-size: 16px; }
+    .step-card p, .guide-block p, .guide-block li { margin: 0; color: #42526b; line-height: 1.65; font-size: 14px; }
+    .guide-block ul { margin: 0; padding-left: 18px; }
+    .ai-panel {
+      min-height: calc(100vh - 150px);
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 12px;
+    }
+    .ai-hero {
+      border-radius: 24px;
+      padding: 18px;
+      color: #fff;
+      background:
+        radial-gradient(circle at 85% 0%, rgba(255,255,255,.22), transparent 120px),
+        linear-gradient(135deg, #071b46, #1556d6);
+      box-shadow: 0 16px 38px rgba(21,86,214,.18);
+    }
+    .ai-hero h2 { margin: 0; font-size: 24px; letter-spacing: -.04em; }
+    .ai-hero p { margin: 8px 0 0; color: rgba(255,255,255,.82); line-height: 1.6; font-size: 14px; }
+    .ai-messages {
+      display: grid;
+      align-content: start;
+      gap: 10px;
+      min-height: 260px;
+    }
+    .ai-message {
+      max-width: 88%;
+      border-radius: 18px;
+      padding: 12px 13px;
+      line-height: 1.65;
+      font-size: 14px;
+      box-shadow: 0 6px 16px rgba(16,24,40,.05);
+    }
+    .ai-message.bot { justify-self: start; background: #fff; color: #42526b; }
+    .ai-message.user { justify-self: end; background: var(--brand-blue); color: #fff; }
+    .ai-composer {
+      position: sticky;
+      bottom: calc(76px + var(--safe-bottom));
+      display: flex;
+      gap: 8px;
+      padding: 10px;
+      border-radius: 20px;
+      background: rgba(255,255,255,.94);
+      border: 1px solid rgba(21,86,214,.10);
+      box-shadow: 0 10px 28px rgba(16,24,40,.08);
+      backdrop-filter: blur(18px);
+    }
+    .ai-composer input {
+      flex: 1;
+      min-width: 0;
+      border: 0;
+      outline: 0;
+      background: #f7f8fa;
+      border-radius: 999px;
+      padding: 12px 14px;
+      color: var(--ink);
+    }
+    .ai-composer button {
+      border: 0;
+      border-radius: 999px;
+      background: var(--brand-blue);
+      color: #fff;
+      padding: 0 16px;
+      font-weight: 900;
+    }
+    .app-card, .scenario, .premium-card {
+      border: 0;
+      text-align: left;
+      min-height: 94px;
+      border-radius: 24px;
+      padding: 15px;
+      background: var(--paper);
+      border: 1px solid rgba(21,86,214,.08);
+      box-shadow: 0 14px 36px rgba(16,24,40,.07);
+      position: relative;
+      overflow: hidden;
+    }
+    .app-card::after, .premium-card::after {
+      content: "";
+      position: absolute;
+      right: -24px;
+      top: -24px;
+      width: 64px;
+      height: 64px;
+      border-radius: 999px;
+      background: rgba(21,86,214,.08);
+    }
+    .scenario b { position: relative; display: block; color: var(--brand-blue-dark); font-size: 18px; margin-bottom: 7px; }
+    .scenario span { position: relative; color: var(--muted); font-size: 12px; line-height: 1.45; }
+    .app-card {
+      display: block;
+      min-height: unset;
+      margin-top: 10px;
+    }
+    .app-card h3 {
+      position: relative;
+      margin: 0 0 7px;
+      color: var(--brand-blue-dark);
+      font-size: 17px;
+      letter-spacing: -.025em;
+    }
+    .app-card p {
+      position: relative;
+      margin: 0;
+      color: #42526b;
+      line-height: 1.58;
+      font-size: 13px;
+    }
+    .suggestions, .chips {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: none;
+    }
+    .suggestions::-webkit-scrollbar, .chips::-webkit-scrollbar { display: none; }
+    .chip {
+      border: 1px solid rgba(21,86,214,.12);
+      background: var(--paper);
+      color: #254164;
+      border-radius: 999px;
+      padding: 9px 12px;
+      white-space: nowrap;
+      font-size: 13px;
+    }
+    .chip.active {
+      color: #fff;
+      background: var(--brand-blue);
+      border-color: var(--brand-blue);
+    }
+    .card-list { display: grid; gap: 10px; }
+    .qa-card {
+      width: 100%;
+      border: 0;
+      text-align: left;
+      border-radius: 24px;
+      padding: 16px;
+      background: var(--paper);
+      border: 1px solid rgba(21,86,214,.08);
+      box-shadow: 0 14px 38px rgba(16,24,40,.07);
+    }
+    .qa-card h3 {
+      margin: 10px 0 8px;
+      color: var(--brand-blue-dark);
+      font-size: 17px;
+      line-height: 1.34;
+      letter-spacing: -.025em;
+    }
+    .qa-card p {
+      margin: 0;
+      color: #42526b;
+      line-height: 1.58;
+      font-size: 14px;
+    }
+    .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .tag {
+      display: inline-flex;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: var(--brand-blue-soft);
+      color: var(--brand-blue);
+      font-weight: 800;
+      font-size: 11px;
+    }
+    .tag.red { background: rgba(197,31,50,.10); color: var(--school-red); }
+    .tag.gray { background: #f2f4f7; color: #667085; }
+    .source-quiet {
+      margin-top: 10px;
+      color: #8a96a8;
+      font-size: 12px;
+    }
+    .official-link {
+      margin-top: 10px;
+      color: var(--school-red);
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .service-card, .source-card {
+      width: 100%;
+      border: 0;
+      text-align: left;
+      border-radius: 20px;
+      padding: 15px;
+      background: var(--paper);
+      border: 1px solid rgba(21,86,214,.10);
+    }
+    .service-card h3, .source-card h3 { margin: 9px 0 7px; color: var(--brand-blue-dark); font-size: 16px; }
+    .service-card p, .source-card p { margin: 0; color: var(--muted); line-height: 1.55; font-size: 13px; word-break: break-all; overflow-wrap: anywhere; }
+    .bottom-nav {
+      position: fixed;
+      left: 50%;
+      bottom: 0;
+      transform: translateX(-50%);
+      z-index: 40;
+      width: min(520px, 100%);
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      padding: 9px 14px calc(9px + var(--safe-bottom));
+      background: rgba(255,255,255,.94);
+      border-top: 1px solid var(--line);
+      backdrop-filter: blur(18px);
+    }
+    .nav-btn {
+      border: 0;
+      border-radius: 17px;
+      background: transparent;
+      color: var(--muted);
+      padding: 9px 4px;
+      display: grid;
+      gap: 3px;
+      place-items: center;
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .nav-btn.active { background: var(--brand-blue-soft); color: var(--brand-blue); }
+    .empty {
+      padding: 24px 16px;
+      border-radius: 22px;
+      background: var(--paper);
+      color: var(--muted);
+      text-align: center;
+      line-height: 1.7;
+    }
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      background: rgba(16,24,40,.48);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      align-items: flex-end;
+      justify-content: center;
+      padding: 0 12px calc(0px + var(--safe-bottom));
+    }
+    .modal-overlay.show { display: flex; }
+    .answer-sheet, .sheet {
+      width: min(430px, 100%);
+      max-height: 86vh;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 18px 18px calc(22px + var(--safe-bottom));
+      word-break: break-word;
+      min-width: 0;
+      border: 0;
+      border-radius: 28px 28px 0 0;
+      color: var(--ink);
+      background: var(--paper);
+      box-shadow: 0 -20px 80px rgba(16,24,40,.30);
+      box-sizing: border-box;
+    }
+    .sheet-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 14px;
+    }
+    .sheet h2 { margin: 8px 0 0; color: var(--brand-blue-dark); font-size: 22px; line-height: 1.25; letter-spacing: -.035em; }
+    .close {
+      width: 36px;
+      height: 36px;
+      border: 0;
+      border-radius: 999px;
+      background: var(--brand-blue-soft);
+      color: var(--brand-blue);
+      font-size: 20px;
+      flex: none;
+    }
+    .info-block {
+      margin-bottom: 10px;
+      padding: 14px;
+      border-radius: 18px;
+      background: #f8fbff;
+      border: 1px solid rgba(21,86,214,.08);
+    }
+    .info-block h4 { margin: 0 0 7px; color: var(--brand-blue-dark); font-size: 14px; }
+    .info-block p, .info-block li { margin: 0; color: #42526b; line-height: 1.7; font-size: 14px; }
+    .info-block ul { margin: 0; padding-left: 18px; }
+    .link { color: var(--brand-blue); font-weight: 900; word-break: break-all; }
+    .access-gate {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 22px;
+      background:
+        radial-gradient(circle at top left, rgba(21,86,214,.18), transparent 32%),
+        linear-gradient(180deg, rgba(7,27,70,.74), rgba(7,27,70,.92));
+      backdrop-filter: blur(12px);
+    }
+    body.access-locked .access-gate { display: flex; }
+    .gate-card {
+      width: min(430px, 100%);
+      max-height: calc(100vh - 44px - var(--safe-bottom));
+      overflow: auto;
+      border-radius: 28px;
+      padding: 22px;
+      background: #fff;
+      box-shadow: 0 28px 90px rgba(0,0,0,.28);
+      border: 1px solid rgba(255,255,255,.58);
+    }
+    .gate-avatar-wrap {
+      height: 124px;
+      margin: -4px 0 12px;
+      border-radius: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      background: #050505;
+      border: 1px solid rgba(21,86,214,.10);
+    }
+    .gate-avatar {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .gate-badge {
+      display: inline-flex;
+      margin-bottom: 12px;
+      padding: 7px 11px;
+      border-radius: 999px;
+      background: var(--brand-blue-soft);
+      color: var(--brand-blue);
+      font-size: 12px;
+      font-weight: 900;
+    }
+    .gate-card h2 { margin: 0 0 8px; color: var(--brand-blue-dark); font-size: 22px; letter-spacing: -.02em; }
+    .gate-card p { margin: 0 0 12px; color: #475467; line-height: 1.65; font-size: 14px; }
+    .gate-contact {
+      display: grid;
+      gap: 8px;
+      margin: 14px 0;
+      padding: 12px;
+      border-radius: 18px;
+      background: #f7f9ff;
+      border: 1px solid rgba(21,86,214,.10);
+      color: #344054;
+      font-size: 14px;
+      font-weight: 800;
+    }
+    .gate-input {
+      width: 100%;
+      height: 48px;
+      border-radius: 16px;
+      border: 1px solid rgba(21,86,214,.22);
+      padding: 0 14px;
+      outline: none;
+      background: #fff;
+      font-size: 15px;
+      font-weight: 800;
+    }
+    .gate-input:focus { border-color: var(--brand-blue); box-shadow: 0 0 0 4px rgba(21,86,214,.10); }
+    .gate-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-top: 10px; }
+    .gate-actions .primary { grid-column: 1 / -1; }
+    .gate-btn {
+      border: 0;
+      border-radius: 16px;
+      padding: 12px 10px;
+      color: var(--brand-blue);
+      background: var(--brand-blue-soft);
+      font-weight: 900;
+    }
+    .gate-btn.primary { color: #fff; background: var(--brand-blue); box-shadow: 0 12px 28px rgba(21,86,214,.24); }
+    .gate-error { min-height: 20px; margin-top: 9px; color: #c51f32; font-size: 13px; font-weight: 900; }
+    @media (max-width: 420px) {
+      .access-gate { align-items: flex-end; padding: 14px 12px calc(14px + var(--safe-bottom)); }
+      .gate-card { border-radius: 24px; padding: 18px; max-height: calc(92vh - var(--safe-bottom)); }
+      .gate-avatar-wrap { height: 104px; border-radius: 20px; margin-top: -2px; }
+      .gate-card h2 { font-size: 20px; }
+      .gate-card p { font-size: 13px; }
+      .gate-actions { grid-template-columns: 1fr; }
+      .gate-btn { min-height: 46px; }
+      .modal-overlay { padding: 0 10px calc(0px + var(--safe-bottom)); }
+      .answer-sheet, .sheet { border-radius: 24px 24px 0 0; padding: 16px 16px calc(20px + var(--safe-bottom)); }
+      .sheet h2 { font-size: 20px; }
+    }
+    /* ===== 管理员编辑模式样式 ===== */
+    .admin-bar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 999;
+      background: #1556d6; color: #fff; padding: 8px 16px;
+      display: flex; align-items: center; gap: 10px; justify-content: center;
+      font-size: 14px; box-shadow: 0 2px 12px rgba(21,86,214,.3);
+    }
+    .admin-bar button {
+      background: #fff; color: #1556d6; border: none; border-radius: 8px;
+      padding: 6px 14px; font-weight: 700; cursor: pointer; font-size: 13px;
+    }
+    .admin-bar button:disabled { opacity: .6; }
+    .admin-bar .exit-btn { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,.5); }
+    body.admin-mode { padding-top: 44px; }
+    body.admin-mode [data-editable] {
+      outline: 2px dashed rgba(21,86,214,.4); outline-offset: 2px;
+      cursor: text; border-radius: 4px;
+    }
+    body.admin-mode [data-editable]:hover { outline-color: #1556d6; background: rgba(21,86,214,.05); }
+    body.admin-mode [data-editable]:focus { outline: 2px solid #1556d6; background: rgba(21,86,214,.08); }
+    .admin-pw-overlay {
+      position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,.5);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .admin-pw-box {
+      background: #fff; border-radius: 16px; padding: 28px 24px; width: 300px;
+      text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,.2);
+    }
+    .admin-pw-box h3 { margin: 0 0 16px; font-size: 18px; color: #101828; }
+    .admin-pw-box input {
+      width: 100%; padding: 10px 14px; border: 2px solid #e0e0e0;
+      border-radius: 10px; font-size: 15px; margin-bottom: 14px; text-align: center;
+    }
+    .admin-pw-box input:focus { border-color: #1556d6; }
+    .admin-pw-box button {
+      width: 100%; padding: 10px; border: none; border-radius: 10px;
+      font-size: 15px; font-weight: 700; cursor: pointer;
+    }
+    .admin-pw-box .confirm-btn { background: #1556d6; color: #fff; margin-bottom: 8px; }
+    .admin-pw-box .cancel-btn { background: #f0f0f0; color: #667085; }
+    .admin-pw-box .err { color: #c51f32; font-size: 13px; margin-top: 8px; min-height: 18px; }
+    /* ===== 弹层通用方案（兼容所有手机浏览器） ===== */
+    .modal-overlay { -webkit-tap-highlight-color: transparent; }
+    .modal-overlay .answer-sheet,
+    .modal-overlay .sheet { -webkit-overflow-scrolling: touch; }
+  </style>
+</head>
+<body>
+  <div class="access-gate" id="accessGate" role="dialog" aria-modal="true" aria-labelledby="accessGateTitle">
+    <section class="gate-card">
+      <div class="gate-avatar-wrap">
+        <img class="gate-avatar" src="assets/quanzi-avatar-original.jpg" alt="权子学长个人IP头像" />
+      </div>
+      <span class="gate-badge">持续更新中</span>
+      <h2 id="accessGateTitle">继续查看湖中医新生速查</h2>
+      <p>你已经浏览了一会儿。本页面持续更新宿舍、报到、选课、校园焚决等内容。<strong>权子学长 QQ 或抖音获取密钥后，可继续查看。</strong></p>
+      <div class="gate-contact">
+        <div>权子学长 QQ：3447226818</div>
+        <div>权子学长抖音：bxq3447226818</div>
+      </div>
+      <input class="gate-input" id="accessKeyInput" type="text" placeholder="输入访问密钥" autocomplete="off" />
+      <div class="gate-actions">
+        <button class="gate-btn primary" onclick="unlockAccess()">进入速查</button>
+        <button class="gate-btn" onclick="copyContact('qq')">复制QQ号</button>
+        <button class="gate-btn" onclick="copyContact('douyin')">复制抖音号</button>
+      </div>
+      <div class="gate-error" id="accessGateError" aria-live="polite"></div>
+    </section>
+  </div>
+  <div class="app-shell">
+    <header class="nav-bar">
+      <div class="brand-line">
+        <div class="page-title">湖中医新生助手</div>
+        <div class="official-emblem" id="adminEmblem" style="cursor:pointer; width:36px; height:36px; display:flex; align-items:center; justify-content:center; font-size:28px; line-height:1; user-select:none;" title="湖中医新生助手">🎓</div>
+      </div>
+    </header>
+
+    <main>
+      <section class="page active" id="homePage">
+        <div class="miniapp-hero">
+          <h1>湖中医新生速查</h1>
+          <h2>刚来湖中医，先看这几件事</h2>
+          <p class="subtitle">先看最影响入学的几件事，拿不准的直接问校园专属AI。食堂、超市、快递、图书馆这些位置型信息，后续放进校园地图里点开看。</p>
+          <label class="floating-search" aria-label="搜索新生问题">
+            <span>🔎</span>
+            <input id="globalSearch" placeholder="直接问AI：宿舍、电费、校园网、军训、选课、图书馆" />
+          </label>
+        </div>
+        <div class="hero-orbit" style="display:none"></div>
+        <div class="premium-card" style="display:none"></div>
+
+        <div class="official-link">遇到不确定的信息，以学校官网为准</div>
+
+        <div class="section-head"><h2>高频速查</h2></div>
+        <div class="feature-grid" id="featureGrid">
+          <button class="feature-item" onclick="openGuide('checklist')"><span class="icon-box color-blue">✓</span><span>报到清单</span></button>
+          <button class="feature-item" onclick="openGuide('dorm')"><span class="icon-box color-indigo">⌂</span><span>宿舍入住</span></button>
+          <button class="feature-item" onclick="openGuide('fees')"><span class="icon-box color-orange">缴</span><span>生活缴费</span></button>
+          <button class="feature-item" onclick="openGuide('network')"><span class="icon-box color-teal">网</span><span>校园网</span></button>
+          <button class="feature-item" onclick="openGuide('course')"><span class="icon-box color-blue">课</span><span>选课考试</span></button>
+          <button class="feature-item" onclick="openGuide('campusLife')"><span class="icon-box color-green">生</span><span>校园生活</span></button>
+          <button class="feature-item" onclick="openGuide('campusHidden')"><span class="icon-box color-grey">焚</span><span>校园焚决</span></button>
+          <button class="feature-item" onclick="openGuide('tanhualin')"><span class="icon-box color-purple">昙</span><span>昙华林相关</span></button>
+          <button class="feature-item" onclick="switchTab('ai')"><span class="icon-box color-teal">AI</span><span>我想问</span></button>
+        </div>
+
+        <div class="section-head"><h2>新生最常问</h2><span>只露出几条，不堆满首页</span></div>
+        <div class="card-list" id="homeCards"></div>
+      </section>
+
+      <section class="page" id="guidePage">
+        <div class="detail-nav">
+          <button class="back-btn" onclick="backHome()">‹ 返回</button>
+          <div class="detail-nav-title" id="detailNavTitle">报到清单</div>
+          <span></span>
+        </div>
+        <div class="guide-detail">
+          <article class="guide-article">
+            <div class="article-head">
+              <span class="article-kicker">新生速查</span>
+              <h2 id="guideTitle">报到清单</h2>
+            </div>
+            <div class="article-body" id="articleBody"></div>
+            <div class="article-official-links" id="articleOfficialLinks"></div>
+            <button class="article-ai-link" onclick="switchTab('ai')">还有不懂，问校园专属AI</button>
+          </article>
+          <div class="guide-sections" id="guideSections" style="display:none"></div>
+          <div class="card-list" id="guideCards" style="display:none"></div>
+        </div>
+      </section>
+
+      <section class="page" id="aiPage">
+        <div class="ai-panel">
+          <div class="ai-hero">
+            <h2>校园专属AI</h2>
+            <p>问湖中医任何问题。它会优先搜索已投喂的新生资料、官网入口和整理过的问答，帮你直接找到答案。</p>
+          </div>
+          <div class="chips" id="aiSuggestions"></div>
+          <div class="ai-messages" id="aiMessages"></div>
+          <div class="ai-composer">
+            <input id="aiInput" placeholder="问：宿舍电费怎么交？校园网要办电话卡吗？" />
+            <button onclick="askAI()">发送</button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <nav class="bottom-nav compact-nav" aria-label="底部导航">
+    <button class="nav-btn active" data-tab="home" onclick="switchTab('home')"><span>🏠</span><span>首页</span></button>
+    <button class="nav-btn" data-tab="ai" onclick="switchTab('ai')"><span>✦</span><span>AI助手</span></button>
+  </nav>
+
+  <div class="modal-overlay" id="detailDialog">
+    <div class="answer-sheet">
+      <div class="sheet-head">
+        <div>
+          <div class="tags" id="detailTags"></div>
+          <h2 id="detailTitle"></h2>
+        </div>
+        <button class="close" onclick="closeDialog('detailDialog')">×</button>
+      </div>
+      <div id="detailBody"></div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="sourceDialog">
+    <div class="sheet">
+      <div class="sheet-head">
+        <div>
+          <div class="tags" id="sourceTags"></div>
+          <h2 id="sourceTitle"></h2>
+        </div>
+        <button class="close" onclick="closeDialog('sourceDialog')">×</button>
+      </div>
+      <div id="sourceBody"></div>
+    </div>
+  </div>
+
+  <script>
+    const ITEMS = [{"id": "arrival-documents", "title": "报到前证件和档案要带什么？", "category": "报到前准备", "sub": "证件材料", "question": "报到要带哪些证件？哪些东西不能忘？", "answer": "身份证复印件、照片、录取通知书、高考材料、团员档案和学生档案都要提前整理好。", "detail": "文档提醒证件类平时不常用，但报到、注册、办卡、入学手续都会用到，建议用档案袋统一装好。身份证正反面复印件、个人照片、录取通知书、高考成绩单/准考证、团员档案、学生档案都应提前准备。", "tips": ["不要等到学校再集中复印，开学前后复印店可能排队", "档案类材料丢失后补办麻烦", "具体上交要求以录取通知书和学校最新报到通知为准"], "words": ["证件", "档案", "录取通知书", "照片", "身份证", "团员档案"], "sourceIds": ["uploaded-guide-docx", "admission-home-2026"], "officialLinks": ["admission-home-2026"], "kind": "重要事项", "status": "需确认", "note": ""}, {"id": "arrival-photos", "title": "一寸、两寸照片要准备多少？", "category": "报到前准备", "sub": "证件材料", "question": "开学照片要带几张？什么底色？", "answer": "文档建议一寸至少一版、两寸 6 张左右，红底或蓝底都可以准备。", "detail": "上传攻略建议一寸照片至少一版，12 张较稳；两寸照片 6 张较稳。照片可能会用于多种校内手续，提前准备能减少开学临时拍照和排队。", "tips": ["不同手续可能要求不同底色，建议红底和蓝底电子版都保留", "照片用途可能变化，具体证件照要求以办理现场为准"], "words": ["一寸照片", "两寸照片", "证件照", "红底", "蓝底"], "sourceIds": ["uploaded-guide-docx"], "officialLinks": [], "kind": "生活经验", "status": "可参考", "note": ""}, {"id": "arrival-bedding", "title": "床铺尺寸和床上用品怎么准备？", "category": "报到前准备", "sub": "床品行李", "question": "床多大？蚊帐、床垫、被套怎么买？", "answer": "的床铺规格是 1.9m × 0.9m，蚊帐可参考 1.9m × 0.9m × 1.1m。", "detail": "攻略建议准备夏凉被、枕头、厚一点的床垫、床单、枕套、被套等。床铺尺寸信息适合提前网购，但不同宿舍楼可能有细微差异，建议留有余量。", "tips": ["不要买太宽的床垫或蚊帐", "开学快递多，提前寄送要考虑取件压力"], "words": ["床铺", "床垫", "蚊帐", "床单", "被套", "宿舍"], "sourceIds": ["uploaded-guide-docx"], "officialLinks": [], "kind": "生活经验", "status": "可参考", "note": ""}, {"id": "arrival-shopping", "title": "生活用品要全部从家里带吗？", "category": "报到前准备", "sub": "行李取舍", "question": "行李太多怎么办？哪些东西到校再买？", "answer": "不用全带。洗漱、桶盆、拖鞋、晾衣架等可在学校或周边购买，轻装到校更省力。", "detail": "攻略建议新生不要携带过多物品，很多生活用品可以到校后在学生超市或东澜岸附近购买。若家长陪同，可到周边商业区采购，价格和选择可能更灵活。", "tips": ["开学快递多，寄件取件可能拥挤", "学生超市可能比普通超市略贵", "一个人报到时不要带太多难搬的行李"], "words": ["生活用品", "学生超市", "东澜岸", "快递", "行李"], "sourceIds": ["uploaded-guide-docx", "uploaded-faq-doc"], "officialLinks": [], "kind": "生活经验", "status": "可参考", "note": ""}, {"id": "arrival-route", "title": "坐火车或高铁到武汉后怎么去学校？", "category": "报到前准备", "sub": "到校路线", "question": "武汉东站、武昌站、汉口站到学校怎么走？", "answer": "文档建议优先用地铁到 5 号线“中医药大学站”，地铁站门口就是学校北门附近。", "detail": "攻略提到武汉东站可坐 5 号线直达；武昌火车站可坐 4 号线到复兴路转 5 号线；汉口火车站可坐 2 号线到积玉桥转 5 号线。实际路线建议以高德地图等导航软件实时路线为准。", "tips": ["一定看清地铁方向", "高峰期换乘和 2 号线可能拥挤", "行李多时要预留更多时间"], "words": ["武汉东站", "武昌站", "汉口站", "地铁", "5号线", "中医药大学站", "到校"], "sourceIds": ["uploaded-guide-docx", "uploaded-faq-doc"], "officialLinks": [], "kind": "生活经验", "status": "可参考", "note": ""}, {"id": "arrival-cash-alipay", "title": "开学当天要带现金吗？食堂怎么支付？", "category": "报到前准备", "sub": "支付准备", "question": "学校食堂能微信支付吗？现金要带多少？", "answer": "攻略建议带少量现金备用，并提前准备自己的支付宝账号；食堂窗口以支付宝支付为主。", "detail": "上传攻略建议准备少量现金，以防线上支付临时出问题；同时提醒食堂窗口通常支持支付宝支付，建议提前用本人实名手机号注册好支付宝。", "tips": ["不要带太多现金，避免丢失", "支付方式可能随窗口调整，现场以食堂实际为准"], "words": ["现金", "支付宝", "食堂", "支付", "银行卡"], "sourceIds": ["uploaded-guide-docx"], "officialLinks": [], "kind": "生活经验", "status": "需确认", "note": "每年可能变，先按提醒看"}, {"id": "dorm-electricity", "title": "宿舍用电、电费、吹风机要注意什么？", "category": "宿舍和生活", "sub": "宿舍用电", "question": "宿舍限电多少？电费怎么交？吹风机能不能用？", "answer": "宿舍全天不断电，限电功率约500W，电费需自行缴纳。吹风机、电热水壶等大功率电器通常无法使用，建议准备小功率吹风或去公共区域使用。", "detail": "宿舍有空调，自来水不收费，电费需自行通过官方入口缴纳。宿舍限电功率约为500W，吹风机、电热水壶、电煮锅等大功率电器容易触发跳闸，不建议在宿舍使用。如需吹头发可准备小功率吹风机或去宿舍公共区域/浴室使用。电费缴纳入口：http://meter.hbucm.edu.cn/pages/index.html。宿舍用电安全规则以学校和宿管要求为准。", "tips": ["限电约500W，大功率电器容易跳闸", "电费缴纳入口已核验：http://meter.hbucm.edu.cn/pages/index.html", "不要在宿舍使用电煮锅、电热毯等违规电器"], "words": ["宿舍", "电费", "限电", "500W", "吹风机", "空调", "水电", "跳闸"], "sourceIds": ["uploaded-faq-doc"], "officialLinks": ["http://meter.hbucm.edu.cn/pages/index.html"], "kind": "生活经验", "status": "需确认", "note": "每年可能变，先按提醒看"}, {"id": "dorm-gate-time", "title": "宿舍门禁大概是什么情况？", "category": "宿舍和生活", "sub": "门禁", "question": "宿舍几点开门关门？门禁要注意什么？", "answer": "问答 宿舍早上开门、晚上关门，但具体门禁规则要以宿管和学院通知为准。", "detail": "上传 问答 过宿舍开关门时间经验，但门禁属于管理规则，可能按宿舍楼、校区、学期安排调整。页面只作为提醒，不写成不可变制度。", "tips": ["门禁规则不要只听群聊传言", "晚归、请假等按辅导员和宿管要求处理"], "words": ["门禁", "宿舍", "开门", "关门", "晚归"], "sourceIds": ["uploaded-faq-doc"], "officialLinks": [], "kind": "重要事项", "status": "需确认", "note": ""}, {"id": "dorm-no-elevator", "title": "宿舍有电梯吗？行李怎么搬？", "category": "宿舍和生活", "sub": "搬运行李", "question": "宿舍楼有电梯吗？行李很多怎么办？", "answer": "问答 文档提醒宿舍没有电梯，楼层可能较高，行李尽量精简。", "detail": "宿舍上上下下主要靠自己爬楼，楼层可能较高。建议把必需品和可到校再买的东西分开，减少报到当天搬运压力。", "tips": ["别把所有生活用品一次性从家带来", "大件可考虑到校后购买或分批寄送"], "words": ["宿舍", "电梯", "搬行李", "楼层", "报到"], "sourceIds": ["uploaded-faq-doc", "uploaded-guide-docx"], "officialLinks": [], "kind": "生活经验", "status": "可参考", "note": ""}, {"id": "dining-basic", "title": "食堂大概怎么样？吃饭选择多吗？", "category": "宿舍和生活", "sub": "食堂", "question": "食堂能吃吗？主食多不多？", "answer": "问答 学校有北区食堂、南区食堂和海锦苑，主食种类较全。", "detail": "文档中提到食堂有饼、米粉、面条、饺子、米饭等主食选择，北区食堂、南区食堂、海锦苑都是常见用餐地点。具体窗口和口味随经营变化。", "tips": ["不要只看个别评价，开学后自己多试几个窗口", "支付方式和营业时间以现场为准"], "words": ["食堂", "北区食堂", "南区食堂", "海锦苑", "吃饭"], "sourceIds": ["uploaded-faq-doc", "uploaded-guide-docx"], "officialLinks": [], "kind": "生活经验", "status": "可参考", "note": ""}, {"id": "nearby-donglanan", "title": "学校附近买东西、吃饭去哪里？", "category": "宿舍和生活", "sub": "周边生活", "question": "学校周边有什么商圈？生活用品去哪买？", "answer": "文档多次提到东澜岸，适合买生活用品、吃饭和短途采购。", "detail": "攻略建议如果家长陪同，可以到离学校不远的东澜岸商业区超市购买生活用品；问答 也提到东澜岸是附近较常用的商业地点。", "tips": ["开学初人流多，注意看管随身物品", "价格和店铺变化快，以现场为准"], "words": ["东澜岸", "周边", "超市", "购物", "外卖", "小吃"], "sourceIds": ["uploaded-guide-docx", "uploaded-faq-doc"], "officialLinks": [], "kind": "生活经验", "status": "可参考", "note": ""}, {"id": "network-campus-wifi", "title": "校园网和电话卡怎么选最稳？", "category": "网络和卡片", "sub": "校园网/电话卡", "question": "校园网够不够用？电话卡要不要办？暑假套餐和开学套餐有什么区别？", "answer": "校园网适合教室、图书馆查资料；宿舍、食堂、路上更依赖手机流量。套餐对比：暑假套餐39元/月、600G流量、200分钟通话；开学现场套餐往年多为39元/月、100G流量、100分钟通话。暑假套餐流量和通话更多，更划算。", "detail": "校园网主要解决教室、图书馆等学习场景，认证后可用，官方入口是信息化建设办公室（https://nic.hbucm.edu.cn/），有账号开通流程和网络使用指南。宿舍、食堂、操场、路上刷视频、打游戏、微信发消息更依赖稳定手机流量。套餐对比：①暑假套餐39元/月、600G流量、200分钟通话，流量和通话更多；②开学现场办理往年多为39元/月、100G流量、100分钟通话。同样39元月租，暑假套餐流量多500G、通话多100分钟，明显更划算。学校里只有中国移动和中国联通营业厅，**权子学长**也在和中国移动营业厅合作，想了解移动校园卡可以加QQ：3447226818。办卡前看清月租、流量、合约期、注销方式和扣费规则。", "tips": ["暑假套餐600G流量 vs 开学套餐100G流量，同样39元月租差很多", "校园网官方入口：信息化建设办公室 https://nic.hbucm.edu.cn/", "不要把身份证、银行卡信息随便交给身份不明的人", "想了解移动校园卡可找**权子学长**（QQ：3447226818）"], "words": ["校园网", "电话卡", "流量", "套餐", "暑假套餐", "开学套餐", "信息化建设办公室", "中国移动", "HBUCM"], "sourceIds": ["nic-home", "uploaded-faq-doc", "library-faq-2026"], "officialLinks": ["nic-home", "nic-network-guide", "library-faq-2026"], "kind": "生活经验", "status": "可参考", "note": ""}, {"id": "phone-card-choice", "title": "校园电话卡到底要不要办？", "category": "网络和卡片", "sub": "电话卡", "question": "学长学姐推的校园电话卡能买吗？", "answer": "如果原套餐流量少或异地使用不划算，建议提前比较校园电话卡，暑假套餐更划算。", "detail": "可以保留原手机号，同时根据流量需求选择校园电话卡。校内主要能看到中国移动和中国联通营业厅，线下售后更方便；学校里没有中国电信营业厅，补卡、咨询、售后处理就没有校内网点方便。**权子学长**可协助了解中国移动校园电话卡，QQ：3447226818。", "tips": ["移动和联通都可以比较，优先看校内售后是否方便", "想了解中国移动校园卡可找**权子学长** QQ：3447226818", "优惠套餐也要看合约期、注销规则和扣费方式"], "words": ["校园电话卡", "手机卡", "流量", "推销", "诈骗"], "sourceIds": ["uploaded-guide-docx", "uploaded-faq-doc", "security-anti-fraud"], "officialLinks": ["security-anti-fraud"], "kind": "生活经验", "status": "可参考", "note": ""}, {"id": "campus-card-student-card", "title": "校园卡和学生证分别是干嘛的？", "category": "网络和卡片", "sub": "证件卡片", "question": "通知书里的卡、学生证、校园卡是不是一个东西？", "answer": "问答 文档把校园卡和学生证分开讲：校园卡常用于图书馆门禁等，学生证是学生身份和假期交通优惠证明。", "detail": "问答 提到随通知书寄来的卡片通常带高考报名照片，要妥善保管；学生证到校后统一办理，是学生身份和假期长途交通优惠的重要证明。", "tips": ["卡片丢失补办可能麻烦", "不同卡片用途不同，不要混淆", "补办地点和流程需以学校最新规定为准"], "words": ["校园卡", "学生证", "图书馆门禁", "补办", "一卡通"], "sourceIds": ["uploaded-faq-doc", "library-faq-2026"], "officialLinks": ["library-faq-2026"], "kind": "生活经验", "status": "需确认", "note": "每年可能变，先按提醒看"}, {"id": "bank-card", "title": "学校统一办的银行卡有什么用？", "category": "网络和卡片", "sub": "银行卡", "question": "开学办银行卡是干什么的？", "answer": "攻略提到学校会统一办理一张工商银行卡，部分奖金或款项可能通过银行卡发放。", "detail": "文档提醒办理银行卡通常需要本人实名电话卡。银行卡涉及金融安全，具体办理安排、银行网点、用途和是否必须办理，要以学校通知和现场安排为准。", "tips": ["银行卡不要借给别人", "不要把验证码、密码告诉他人", "具体办理要求需看官方通知"], "words": ["银行卡", "工商银行", "奖金", "实名电话卡", "金融安全"], "sourceIds": ["uploaded-guide-docx", "security-anti-fraud"], "officialLinks": ["security-anti-fraud"], "kind": "重要事项", "status": "需确认", "note": ""}, {"id": "library-orientation", "title": "新生怎么开始用图书馆？", "category": "图书馆", "sub": "入馆教育", "question": "图书馆怎么入门？有没有新生教程？", "answer": "图书馆官网有“新生入馆教育”栏目，里面有常见问题和入馆教育材料。", "detail": "图书馆新生入馆教育栏目下有常见问题和新生入馆教育 PPT。常见问题页面是 2026 内容，适合先看。", "tips": ["开放时间和具体活动以图书馆公告为准", "PPT 内容实施后还要再点开核验"], "words": ["图书馆", "新生入馆教育", "PPT", "常见问题"], "sourceIds": ["library-orientation-column", "library-faq-2026"], "officialLinks": ["library-orientation-column", "library-faq-2026"], "kind": "学习生活", "status": "可参考", "note": ""}, {"id": "library-book-search", "title": "图书馆怎么查书、找书？", "category": "图书馆", "sub": "查书借书", "question": "想找一本书，怎么知道在哪个阅览室？", "answer": "可使用阅览室查询机，或登录图书馆主页的“馆藏查询”。", "detail": "图书馆 2026 问答 说明，可在各阅览室查询机查询书目，也可以进入图书馆主页的馆藏查询，了解图书在馆情况和馆藏分布。", "tips": ["查到在馆不等于书一定在架，可能被人拿在手里、正在上架或修复中", "找不到时可问书库管理人员"], "words": ["查书", "馆藏查询", "索书号", "阅览室", "在馆"], "sourceIds": ["library-faq-2026"], "officialLinks": ["library-faq-2026"], "kind": "学习生活", "status": "可参考", "note": ""}, {"id": "library-my-library", "title": "“我的图书馆”账号和密码是什么？", "category": "图书馆", "sub": "账号登录", "question": "我的图书馆怎么登录？初始密码是什么？", "answer": "图书馆 2026 问答 说用户名为学号或工号，初始密码为学号或工号。", "detail": "登录路径是图书馆主页 → 馆藏查询 → 页面右上角登录“我的图书馆”。无法登录或忘记密码时，可咨询总服务台老师。", "tips": ["首次登录后建议及时按系统要求修改密码", "如登录失败，不要盲目尝试过多次，先咨询图书馆"], "words": ["我的图书馆", "登录", "初始密码", "学号", "续借"], "sourceIds": ["library-faq-2026"], "officialLinks": ["library-faq-2026"], "kind": "学习生活", "status": "可参考", "note": ""}, {"id": "library-borrow-rule", "title": "本科生能借几本书？借多久？", "category": "图书馆", "sub": "借阅规则", "question": "本科生借书数量和借期是多少？", "answer": "图书馆 2026 问答 说本科生最大可借 20 本，借期 2 个月，可续借 1 次，每次 1 个月。", "detail": "图书馆 问答 还说明教职工、研究生借阅数量和期限不同。续借应在图书应还期内办理，可带书和一卡通到自助借还机，或登录“我的图书馆”在线续借。", "tips": ["逾期未还会暂停借阅权限", "假期还书日期以图书馆假期通知为准"], "words": ["借书", "本科生", "借期", "续借", "逾期"], "sourceIds": ["library-faq-2026"], "officialLinks": ["library-faq-2026"], "kind": "学习生活", "status": "可参考", "note": ""}, {"id": "library-e-resources", "title": "图书馆电子资源怎么用？寝室能用吗？", "category": "图书馆", "sub": "电子资源", "question": "知网、万方这些数据库在寝室能不能访问？", "answer": "图书馆 2026 问答 说校内可通过图书馆主页进入中文/外文数据库，寝室可认证 HBUCM 无线网络后访问。", "detail": "校内使用可打开图书馆主页，在资源栏目选择中文数据库或外文数据库。寝室访问时，搜索 HBUCM 无线网络并完成校园网认证后，再访问图书馆资源。校外访问则通过图书馆主页的“校外访问”板块登录。", "tips": ["校外访问按图书馆页面提示操作", "数据库异常可联系图书馆对应部门"], "words": ["电子资源", "数据库", "知网", "万方", "校外访问", "HBUCM"], "sourceIds": ["library-faq-2026", "library-home"], "officialLinks": ["library-faq-2026", "library-home"], "kind": "学习生活", "status": "可参考", "note": ""}, {"id": "library-recommend", "title": "图书馆没有想要的书，可以荐购吗？", "category": "图书馆", "sub": "资源荐购", "question": "图书馆没有我要的书怎么办？", "answer": "可以。图书馆 2026 问答 说确认无馆藏后，可通过“我的图书馆”进行读者荐购。", "detail": "图书馆 问答 还提到可加入图书馆读者荐购群或电话联系文献资源建设部进行荐购，具体方式以图书馆页面为准。", "tips": ["先确认无馆藏再荐购", "QQ 群和电话等联系方式发布前需再次核验"], "words": ["荐购", "图书馆", "无馆藏", "读者荐购"], "sourceIds": ["library-faq-2026"], "officialLinks": ["library-faq-2026"], "kind": "学习生活", "status": "需确认", "note": "每年可能变，先按提醒看"}, {"id": "study-building-code", "title": "课表上的 R101、X101、J101 是什么意思？", "category": "学习和教务", "sub": "上课地点", "question": "课程表上的字母教室看不懂怎么办？", "answer": "问答 字母通常对应楼栋首字母，后面数字表示楼层和教室号。", "detail": "例如 R101 是人文楼 101，X101 是信息楼 101，J101 是基础楼，Y101 是药学楼。带 A/B 的办公室可能表示楼栋分区，开学后可跟班助熟悉路线。", "tips": ["第一周最好提前找教室", "图书馆里的阶梯教室上课可能需要带校园卡"], "words": ["R101", "X101", "J101", "教学楼", "课表", "教室"], "sourceIds": ["uploaded-faq-doc"], "officialLinks": [], "kind": "学习生活", "status": "可参考", "note": ""}, {"id": "study-course-selection", "title": "开学后哪些课需要自己选？", "category": "学习和教务", "sub": "选课", "question": "所有课都要自己抢吗？体育课和选修课怎么回事？", "answer": "问答 大部分课学校会分好，主要需要关注体育课和选修课。", "detail": "大一上体育课统一是太极拳，后续体育课会有不同项目；选修课按兴趣和课表空闲选择，并有学分要求。具体选课时间、系统和规则以教务处通知为准。", "tips": ["选课属于重要事项时效信息，不要只信群聊截图", "一定看教务处或学院通知"], "words": ["选课", "体育课", "选修课", "太极拳", "教务系统"], "sourceIds": ["uploaded-faq-doc", "jwc-home"], "officialLinks": ["jwc-home"], "kind": "重要事项", "status": "需确认", "note": ""}, {"id": "study-makeup-retake", "title": "挂科后补考和重修大概是什么逻辑？", "category": "学习和教务", "sub": "考试补救", "question": "挂科了怎么办？补考没过会怎样？", "answer": "问答 挂科后通常有补考，补考没过就要重修；具体安排看教务处通知。", "detail": "文档提醒不要相信“大学不挂科不完整”，补考和重修会浪费时间。教务处官网有课程重修申请流程等入口，但具体适用对象和流程需点开核验。", "tips": ["补考时间和范围每学期可能变化", "重修流程和表格以教务处为准"], "words": ["挂科", "补考", "重修", "考试", "教务处"], "sourceIds": ["uploaded-faq-doc", "jwc-home"], "officialLinks": ["jwc-home"], "kind": "重要事项", "status": "需确认", "note": ""}, {"id": "study-pe", "title": "大一体育课学什么？", "category": "学习和教务", "sub": "体育课", "question": "大一上体育课是不是统一太极拳？", "answer": "问答 大一上体育课全是太极拳，后续体育课会有不同项目。", "detail": "大一上学习二十四式简化太极，并需要选择任课老师；后续体育课可能包括羽毛球、乒乓球、网球、排球、足球、篮球、瑜伽、跆拳道、田径、武术、散打、健美操等。", "tips": ["具体项目和选课规则以教务系统为准", "第一次课地点通常按老师或班级通知"], "words": ["体育课", "太极拳", "选老师", "项目", "大一"], "sourceIds": ["uploaded-faq-doc", "jwc-home"], "officialLinks": ["jwc-home"], "kind": "学习生活", "status": "需确认", "note": "每年可能变，先按提醒看"}, {"id": "study-cet-computer", "title": "四六级和计算机二级要怎么理解？", "category": "学习和教务", "sub": "考试证书", "question": "四级什么时候能考？计算机二级必须考吗？", "answer": "问答 文档建议认真学英语，四级和六级很重要；计算机二级不是必需品，可按需求报考。", "detail": "学校通常大一下才能报名四级，过四级后可考虑六级；计算机二级每年有考试，是否报考看个人需要。具体报名资格和时间以官方考试通知为准。", "tips": ["不要只听“毕业必须/考研必须”的绝对说法，具体要求要看培养方案和最新通知", "报名时间不要错过"], "words": ["四六级", "四级", "六级", "计算机二级", "英语"], "sourceIds": ["uploaded-faq-doc", "jwc-home"], "officialLinks": ["jwc-home"], "kind": "学习生活", "status": "需确认", "note": "每年可能变，先按提醒看"}, {"id": "campus-military-training", "title": "军训大概要准备什么？", "category": "校园规则", "sub": "军训", "question": "军训累不累？要带什么？", "answer": "文档建议准备水杯、防晒霜、鞋垫；军训服和鞋子通常学校统一订购。", "detail": "攻略文档列出水壶、防晒霜、鞋垫等军训必备物品；问答 提醒军训一般较辛苦，要做好防晒。具体军训时间、地点、服装发放以学院和学校通知为准。", "tips": ["军训安排属于高时效信息，不要提前写死", "鞋垫、防晒、水杯可以提前准备"], "words": ["军训", "防晒", "鞋垫", "水杯", "军训服"], "sourceIds": ["uploaded-guide-docx", "uploaded-faq-doc"], "officialLinks": [], "kind": "学习生活", "status": "需确认", "note": "每年可能变，先按提醒看"}, {"id": "campus-morning-evening", "title": "早操和晚自习真的有吗？", "category": "校园规则", "sub": "日常管理", "question": "大一要早操和晚自习吗？", "answer": "问答 大一有早操和晚自习，具体要求看辅导员、学院和当年安排。", "detail": "早操不是跑步或背书，而是打太极拳；晚自习也会按学院和班级要求执行。由于这是管理要求，具体时间、签到和请假规则不写死。", "tips": ["不要把文档里的时间当作永远不变", "晚自习请假和点名规则以辅导员、学委通知为准"], "words": ["早操", "晚自习", "太极拳", "大一", "辅导员"], "sourceIds": ["uploaded-faq-doc"], "officialLinks": [], "kind": "学习生活", "status": "需确认", "note": "每年可能变，先按提醒看"}, {"id": "campus-run", "title": "乐跑是什么？要怎么完成？", "category": "校园规则", "sub": "乐跑", "question": "健康跑/乐跑有什么要求？", "answer": "问答 大一大二每学期都有乐跑，通常需要完成规定次数和距离。", "detail": "微信小程序“湖北中医药大学健康跑”，并说明除大一上以外通常每学期要完成一定跑步次数、晨跑次数和打卡要求。乐跑规则可能按体育教学安排变化。", "tips": ["不要骑车刷打卡，需要注意会被抓拍", "次数、距离、时间范围必须以体育老师和系统要求为准"], "words": ["乐跑", "健康跑", "晨跑", "打卡", "体育"], "sourceIds": ["uploaded-faq-doc"], "officialLinks": [], "kind": "重要事项", "status": "需确认", "note": ""}, {"id": "major-transfer", "title": "转专业需要什么条件？", "category": "学习和教务", "sub": "转专业", "question": "湖中医转专业需要什么条件？哪些专业不能转？", "answer": "转专业在大一下学期进行，要求大一上学期成绩排名前15%、不挂科、高考选科符合目标专业要求。中医免费医学生、中外合办护理学、5+3一体化不能转专业。点击下方链接可下载官方转专业实施办法PDF。", "detail": "根据《湖北中医药大学普通全日制本科生校内转专业实施办法》（中医教字〔2026〕8号）：转专业在大一下学期进行，要求大一上学期成绩排名前15%，不能挂科，高考选科要符合想转的专业要求。地方专项和国家专项录取的同学也可以转专业，只要符合条件。中医免费医学生、中外合办护理学、5+3一体化不能转专业，但5+3可以申请降至相应的五年制专业。", "tips": ["转专业政策以学校当年正式文件为准，不要只听学长学姐经验", "5+3不能转专业但可申请降至五年制，具体咨询教务处", "转专业后需补修转入专业未修读的必修课"], "words": ["转专业", "成绩排名", "选科", "专项计划", "免费医学生", "5+3", "中医教字〔2026〕8号"], "sourceIds": ["uploaded-faq-doc", "xxgk-student-rules", "transfer-major-pdf"], "officialLinks": ["xxgk-student-rules", "transfer-major-pdf"], "kind": "重要事项", "status": "需确认", "note": ""}, {"id": "baoyan", "title": "保研需要什么条件？", "category": "学习和教务", "sub": "保研", "question": "湖中医保研名额有多少？需要什么条件？", "answer": "学校2026届共245人获推免资格。基本要求包括：必修课平均分不低于75分、无挂科无补考、无违纪处分；英语六级不低于425分或四级不低于500分；按综合考核成绩排名遴选。", "detail": "根据《湖北中医药大学推荐优秀应届本科毕业生免试攻读硕士学位研究生工作实施办法》：推免生对象仅限普通本科应届毕业生（不含专升本、第二学士学位和独立学院学生）。基本条件包括：①必修课、学科基础选修课、专业选修课平均成绩不低于75分；②非英语专业学生英语六级不低于425分或四级不低于500分；③无考试作弊、剽窃他人学术成果记录，无违法违纪受处分记录，无考试不及格记录（无补考记录）。综合考核成绩=平时成绩×70%+测试成绩×15%+面试成绩×10%+奖励分×5%。学校2026届推免生共245人。", "tips": ["保研从大一开始就要重视绩点和英语成绩", "奖励分包括竞赛获奖、科研成果、专利等，可提前准备", "保研政策以学校当年正式文件和教务处通知为准"], "words": ["保研", "推免", "英语六级", "绩点", "综合排名", "奖励分", "免试攻读"], "sourceIds": ["yjs-baoyan-2026"], "officialLinks": ["yjs-baoyan-2026", "https://www.hbucm.edu.cn/zhuanyejianshe/info/1002/2252.htm"], "kind": "重要事项", "status": "需确认", "note": ""},  {"id": "campus-advisor-assistant", "title": "辅导员和班助分别是干嘛的？", "category": "校园规则", "sub": "找谁问", "question": "刚开学遇到问题问谁？导员和班助有什么区别？", "answer": "问答 辅导员类似班主任但不会天天盯着，班助是带新生熟悉校园的学长学姐。", "detail": "班助适合问开学适应、校园路线、材料提醒、避坑等问题；辅导员负责学生管理、重要通知和关键事务。涉及推销、诈骗、请假、处分、学籍等问题，优先找辅导员或官方部门。", "tips": ["生活经验可以问班助，制度和处分类问题要问辅导员", "别怕麻烦，开学有问题及时问"], "words": ["辅导员", "导员", "班助", "班主任", "问题咨询"], "sourceIds": ["uploaded-faq-doc"], "officialLinks": [], "kind": "学习生活", "status": "可参考", "note": ""}, {"id": "apps-list", "title": "湖中医新生常用软件有哪些？", "category": "常用软件", "sub": "软件清单", "question": "开学后要装哪些 App 或小程序？", "answer": "问答 文档列出 WakeUp 课程表、到梦空间、健康跑、趣智校园、U 净、今日校园、学习通、知到、高德地图等。", "detail": "这些工具分别对应课表、课外活动积分、乐跑、喝水洗澡洗衣、请假、作业签到、网课选修、校园导航等场景。具体是否必须使用、入口名称和绑定方式以老师、辅导员和系统通知为准。", "tips": ["不要从不明链接下载 App", "涉及账号密码和缴费的工具要走官方入口", "先确认学院/老师是否要求使用"], "words": ["WakeUp", "到梦空间", "健康跑", "趣智校园", "U净", "今日校园", "学习通", "知到", "高德地图"], "sourceIds": ["uploaded-faq-doc"], "officialLinks": [], "kind": "生活经验", "status": "需确认", "note": "每年可能变，先按提醒看"}, {"id": "apps-dream-space", "title": "到梦空间是干嘛的？", "category": "常用软件", "sub": "课外活动", "question": "到梦空间有什么用？积分重要吗？", "answer": "问答 到梦空间用于记录课外活动积分，毕业要求相关内容需要认真区分。", "detail": "文档提醒到梦空间分和综合测评、奖学金等概念不要混淆。具体积分要求、活动报名方式和毕业要求，以学校和学院最新规定为准。", "tips": ["不要把到梦空间分和综测加分混为一谈", "毕业相关要求必须看学校规定"], "words": ["到梦空间", "活动积分", "综测", "奖学金", "课外活动"], "sourceIds": ["uploaded-faq-doc"], "officialLinks": [], "kind": "生活经验", "status": "需确认", "note": "每年可能变，先按提醒看"}, {"id": "official-admission", "title": "录取查询和招生章程看哪里最稳？", "category": "官方入口", "sub": "招生录取", "question": "录取查询、招生章程应该看哪个网站？", "answer": "优先看湖北中医药大学本科招生信息网，首页已有 2026 招生录取相关入口。", "detail": "招生网首页显示 2026 本科招生录取进程、录取查询方式、普通本科招生章程等栏目入口。页面只作为官方入口，不把招生宣传内容放进信息差列表。", "tips": ["不要用自媒体链接替代官方招生网", "录取和报到事项以官方通知为准"], "words": ["招生网", "录取查询", "招生章程", "2026", "报到"], "sourceIds": ["admission-home-2026"], "officialLinks": ["admission-home-2026"], "kind": "重要事项", "status": "可参考", "note": ""}, {"id": "official-jwc", "title": "教务、缓考、重修、学籍表格看哪里？", "category": "官方入口", "sub": "教务入口", "question": "教务相关流程和表格去哪找？", "answer": "优先看教务处官网，首页有办事指南、常用下载、学籍管理、课程重修申请流程等入口。", "detail": "教务处官网可作为选课、考试、补考重修、缓考、学籍表格等问题的官方入口。但具体流程和表格是否适用于 2026，需要打开对应页面逐条核验。", "tips": ["不要把学长学姐经验当作教务流程", "提交表格前一定看当前版本和学院要求"], "words": ["教务处", "重修", "缓考", "学籍", "表格", "选课"], "sourceIds": ["jwc-home"], "officialLinks": ["jwc-home"], "kind": "重要事项", "status": "看官网", "note": ""}, {"id": "official-gate", "title": "门禁人脸采集和来访预约看哪里？", "category": "官方入口", "sub": "门禁来访", "question": "门禁人脸采集怎么弄？访客预约去哪看？", "answer": "保卫处有人员门禁线上人脸采集及来访预约操作说明页面，但是否仍适用于 2026 需核验。", "detail": "该保卫处页面提供 PDF 附件，属于官方页面，但页面较旧。首版只提供入口和待核验提示，不直接写具体步骤。", "tips": ["不要根据旧 PDF 直接操作到最后", "实际操作以保卫处、宿管或学院最新通知为准"], "words": ["门禁", "人脸采集", "来访预约", "保卫处", "访客"], "sourceIds": ["security-gate-face"], "officialLinks": ["security-gate-face"], "kind": "重要事项", "status": "需确认", "note": ""}, {"id": "official-library", "title": "图书馆、数据库、移动图书馆入口在哪？", "category": "官方入口", "sub": "图书馆入口", "question": "图书馆官网里有哪些实用入口？", "answer": "图书馆官网有新生入馆教育、常见问题、中文/外文数据库、移动图书馆、资源荐购等入口。", "detail": "图书馆官网适合查电子资源、数据库、新生入馆教育、资源荐购、移动图书馆和馆内公告。具体开馆时间和活动安排以官网公告为准。", "tips": ["不要把旧的开馆时间截图当作最新安排", "数据库访问问题优先看图书馆 问答"], "words": ["图书馆官网", "数据库", "移动图书馆", "新生入馆教育", "资源荐购"], "sourceIds": ["library-home", "library-faq-2026"], "officialLinks": ["library-home", "library-faq-2026"], "kind": "官网入口", "status": "可参考", "note": ""}, {"id": "dorm-official-updates", "title": "黄家湖近期有哪些宿舍楼维修、刷白和新公寓信息？", "category": "宿舍和生活", "sub": "宿舍楼更新", "question": "黄家湖宿舍是不是刷白了？北区3号楼、南区公寓、消防窗这些对新生有什么用？", "answer": "黄家湖有2026级新生宿舍刷白、北区学生宿舍3号楼维修、一楼可逃生式消防安全窗、南区新建学生公寓等线索。能说明学校近期在维护和扩容黄家湖宿舍，但不能说明你一定住哪栋。", "detail": "黄家湖校区2026级新生宿舍刷白项目能说明学校针对新生宿舍安排了墙面维护，但公告未披露具体楼栋；北区学生宿舍3号楼维修明确涉及1-6层室内寝室及公共区域；黄家湖一楼宿舍及公共区域有可逃生式消防安全窗项目；南区新建学生公寓公开信息显示宿舍872间、3470张床、四人间为主。所有信息都只能作为黄家湖入住关注点，具体住宿安排、床位、费用和启用时间以学校通知为准。", "tips": ["不要把采购公告理解成个人住宿分配结果", "分到具体寝室后，先检查墙面、门窗、水电、空调、床桌椅和公共区域", "发现问题及时拍照并按宿管、辅导员或报修流程处理"], "words": ["宿舍", "刷白", "维修", "北区3号楼", "北区学生宿舍3号楼", "消防窗", "可逃生式消防安全窗", "南区公寓", "南区新建学生公寓", "四人间", "3470张床", "872间", "黄家湖"], "sourceIds": ["dorm-paint-2026", "dorm-north3-repair", "dorm-safety-window", "dorm-south-apartment"], "officialLinks": ["dorm-paint-2026", "dorm-north3-repair", "dorm-safety-window", "dorm-south-apartment"], "kind": "重要事项", "status": "需确认", "note": ""}];
+    const SOURCES = [{"id": "uploaded-guide-docx", "name": "新生入学攻略[副本].docx", "url": "", "fileName": "新生入学攻略[副本].docx", "kind": "新生指南", "visible": "来自你提供的新生指南材料。", "found": "证件材料、照片、录取通知书、档案材料、洗漱用品、床铺规格、军训用品、校园电话卡、银行卡、现金、食堂支付、学生超市、东澜岸购物、武汉各车站到校路线、社团与迎新信息。", "use": "作为报到前准备、行李清单、到校路线、生活提示的主来源。", "valid": "用户已确认文档信息可靠；其中涉及具体入口、费用、联系方式的内容仍需在页面中提示核验。"}, {"id": "uploaded-faq-doc", "name": "新生常见问题合集.doc", "url": "", "fileName": "新生常见问题合集.doc", "kind": "新生指南", "visible": "来自你提供的新生指南材料。", "found": "宿舍楼层、无电梯、限电、空调、门禁、用水、电费、校园网、校园电话卡、防诈骗、校园卡、学生证、辅导员、班助、军训、早操、晚自习、乐跑、图书馆、常用软件、专业划分、教学楼命名、体育课、四六级、计算机二级、选课、补考重修、食堂、外卖、周边商圈、武汉气候、兼职、奖学金、转专业等。", "use": "作为信息差 问答 的主来源，尤其适合宿舍、学习、生活、软件和避坑类条目。", "valid": "用户已确认文档信息可靠；制度、入口、电话、具体办理流程需结合官方入口提示核验。"}, {"id": "library-faq-2026", "name": "湖北中医药大学图书馆常见问题", "url": "https://tsg.hbucm.edu.cn/info/1193/12031.htm", "fileName": "", "kind": "可用官网", "visible": "官网页面能支持当前使用。", "found": "馆藏查询、“我的图书馆”登录、初始密码、馆藏分布、索书号、随书光盘、本科生借阅册数和借期、续借、逾期影响、电子资源校内/校外访问、图书荐购、数据库问题电话、参考咨询方式。", "use": "直接拆成图书馆常见问题条目，作为图书馆栏目最可靠的 可用官网内容。", "valid": "页面属于图书馆“新生入馆教育 > 常见问题”，内容为 2026 常见问题。"}, {"id": "library-orientation-column", "name": "湖北中医药大学图书馆新生入馆教育栏目", "url": "https://tsg.hbucm.edu.cn/xxzc/xsrgjy.htm", "fileName": "", "kind": "可用官网", "visible": "官网页面能支持当前使用。", "found": "栏目下有“常见问题”和“新生入馆教育 PPT”入口。", "use": "放入图书馆入门入口，指向官方栏目。", "valid": "栏目仍可访问，且其中常见问题为 2026 内容；PPT 需要实施后继续核验。"}, {"id": "library-home", "name": "湖北中医药大学图书馆官网", "url": "https://tsg.hbucm.edu.cn/", "fileName": "", "kind": "官网入口", "visible": "作为跳转入口使用。", "found": "中文数据库、外文数据库、试用资源、新生入馆教育、常见问题、移动图书馆、馆长信箱、资源荐购、图书馆电话与服务入口。", "use": "作为图书馆、数据库、移动图书馆和官方资源入口，不写死开放时间。", "valid": "官网入口可访问；开馆时间、活动安排、服务细节需以当前公告为准。"}, {"id": "jwc-home", "name": "湖北中医药大学教务处官网", "url": "https://jwc.hbucm.edu.cn/", "fileName": "", "kind": "可用官网", "visible": "官网页面能支持当前使用。", "found": "办事指南、常用下载、课程重修申请流程、缓考申请表、学籍学历管理用表、学籍管理通知、教学制度等入口。", "use": "放入教务办事、选课考试、补考重修、学籍相关条目的官方入口；不直接写死流程。", "valid": "官网入口可访问；具体表格和流程是否适用于 2026 需逐条打开核验。"}, {"id": "admission-home-2026", "name": "湖北中医药大学本科招生信息网", "url": "https://zs.hbucm.edu.cn/", "fileName": "", "kind": "可用官网", "visible": "官网页面能支持当前使用。", "found": "2026 本科招生录取进程、录取查询方式、普通本科招生章程、招生政策等栏目入口。", "use": "用于录取查询、招生章程和报到前官方入口，不把招生宣传内容放进核心问答。", "valid": "首页明确出现 2026 本科招生相关内容，可作为 2026 招生/录取入口。"}, {"id": "security-gate-face", "name": "湖北中医药大学人员门禁线上人脸采集及来访预约操作说明", "url": "https://bwc.hbucm.edu.cn/info/1060/3082.htm", "fileName": "", "kind": "可用官网", "visible": "官网页面能支持当前使用。", "found": "保卫处页面提供“人员门禁线上人脸采集及来访预约操作说明”PDF 附件。", "use": "只放门禁/来访预约官方说明入口，不在页面写具体步骤。", "valid": "页面较旧，无法仅凭页面确认 2026 仍按该 PDF 操作。"}, {"id": "security-anti-fraud", "name": "湖北中医药大学保卫处防诈骗提醒", "url": "https://bwc.hbucm.edu.cn/info/1065/1451.htm", "fileName": "", "kind": "需确认", "visible": "官网入口存在，但具体规则发布前还要确认。", "found": "防范电信网络诈骗提醒，包含“要钱的一分不给，给钱的一分不要”、“六不”、“十个凡是”以及紧急情况联系提示。", "use": "可用于防诈骗原则和避坑提醒；电话、处置流程类信息需复核。", "valid": "防诈原则具有长期参考价值，但具体电话和处置流程需在发布前核验。"}, {"id": "school-home", "name": "湖北中医药大学官网首页", "url": "https://www.hbucm.edu.cn/", "fileName": "", "kind": "官网入口", "visible": "作为跳转入口使用。", "found": "学校新闻、通知公告、专题、服务入口。", "use": "只放官方入口，不进入首页核心信息差内容。", "valid": "入口可访问，但对新生信息差价值低。"}, {"id": "school-profile", "name": "湖北中医药大学学校简介", "url": "https://www.hbucm.edu.cn/xxgk/xxjj.htm", "fileName": "", "kind": "官网入口", "visible": "作为跳转入口使用。", "found": "学校历史、校区概况、办学特色、学科专业、人才培养和科研平台等。", "use": "只作为“了解学校”辅助入口，不放入核心信息差列表。", "valid": "适合背景了解，不用于新生办事流程。"}, {"id": "dorm-paint-2026", "name": "黄家湖校区2026级新生宿舍刷白项目", "url": "https://www.hbucm.edu.cn/cgyzb/info/1216/42533.htm", "fileName": "", "kind": "可用官网", "visible": "采购公告能作为宿舍维护线索，但不能当成具体入住承诺。", "found": "黄家湖校区2026级新生宿舍刷白项目，预算50万元，最高限价494839.75元；公告未披露具体楼栋和房间。", "use": "写入宿舍入住页：说明黄家湖2026级新生宿舍有刷白维护安排，同时标注具体楼栋、房间和实际入住条件以分配为准。", "valid": "公告可访问；具体施工内容在采购文件第三章，不能据此推断每间宿舍状态。"}, {"id": "dorm-north3-repair", "name": "黄家湖校区北区学生宿舍3号楼维修项目", "url": "https://www.hbucm.edu.cn/cgyzb/info/1216/42363.htm", "fileName": "", "kind": "可用官网", "visible": "公告明确到楼栋和楼层范围，可转成入住检查提醒。", "found": "维修范围为黄家湖校区北区学生宿舍3号楼1-6层室内寝室及公共区域，涉及室内拆除及装修、水电拆除及安装、外墙乳胶漆、外墙局部防水等。", "use": "写入宿舍入住页：如果分到北区3号楼，入住时重点检查墙面、水电、公共区域和防水相关问题。", "valid": "公告可访问；不能说明该楼一定分配给新生。"}, {"id": "dorm-safety-window", "name": "黄家湖校区学生宿舍安装可逃生式消防安全窗项目", "url": "https://www.hbucm.edu.cn/cgyzb/info/1216/41753.htm", "fileName": "", "kind": "可用官网", "visible": "公告明确黄家湖一楼宿舍和公共区域消防安全窗安装范围。", "found": "黄家湖校区学生宿舍一楼房间及一楼公共区域安装可逃生式防盗安全窗，共计569个，原防盗网拆除、新做及安装共1543.8㎡。", "use": "写入宿舍安全页：住一楼的新生关注消防安全窗和应急开启说明，不私自改动。", "valid": "公告可访问；不能推断每栋每间都已经完成安装。"}, {"id": "dorm-fire-alarm", "name": "学生宿舍安装改造火灾自动报警系统", "url": "https://www.hbucm.edu.cn/cgyzb/info/1216/41713.htm", "fileName": "", "kind": "可用官网", "visible": "公告说明黄家湖和昙华林两个校区宿舍消防报警系统均有安装改造安排。", "found": "包1为黄家湖校区火灾自动报警系统安装，包2为昙华林校区火灾自动报警系统安装，总预算357.7万元，合同履行期90个工作日。", "use": "写入宿舍安全页：消防系统更新不等于放宽用电规则，新生仍须遵守宿舍用电管理。", "valid": "公告可访问；未披露具体楼栋和房间覆盖情况。"}, {"id": "dorm-south-apartment", "name": "新建黄家湖校区学生公寓（南区）项目", "url": "https://www.hbucm.edu.cn/cgyzb/info/1216/41733.htm", "fileName": "", "kind": "可用官网", "visible": "公告披露新建公寓规模、宿舍间数、床位和房型结构。", "found": "黄家湖南区新建学生公寓项目总建筑面积37382.59㎡，主要建设学生宿舍872间，其中四人间863间、二人间无障碍宿舍9间，总床位3470张。", "use": "写入宿舍入住页：说明南区新建学生公寓以四人间为主，但是否启用、是否分配给当届新生以学校通知为准。", "valid": "公告可访问；不能推断当年新生一定入住。"}, {"id": "dorm-tanhualin-cabinet", "name": "昙华林校区新五栋C座更衣柜采购项目", "url": "https://www.hbucm.edu.cn/cgyzb/info/1215/42583.htm", "fileName": "", "kind": "可用官网", "visible": "公告说明昙华林新五栋C座有储物设施采购线索。", "found": "采购铁制更衣柜78组，技术参数900×500×1850mm，送货/服务地址为昙华林校区新五栋C座。", "use": "写入宿舍入住页的昙华林补充线索，不承诺每个寝室都有独立更衣柜。", "valid": "公告可访问；柜子用途、摆放位置和使用对象未披露。"}, {"id": "dorm-tanhualin-14-repair", "name": "文华大学旧址学生宿舍修缮工程（昙华林校区14栋）", "url": "https://www.hbucm.edu.cn/cgyzb/info/1220/41133.htm", "fileName": "", "kind": "可用官网", "visible": "公告说明昙华林14栋宿舍有修缮工程线索。", "found": "昙华林校区14栋学生宿舍修缮工程成交公告，施工工期120日历天，成交金额112.56万元。", "use": "写入宿舍入住页的昙华林补充线索，不承诺新生一定入住14栋。", "valid": "公告可访问；具体房间条件需以实际分配和现场为准。"},
+    {"id": "transfer-major-pdf", "name": "湖北中医药大学普通全日制本科生校内转专业实施办法（中医教字〔2026〕8号）", "url": "https://raw.githubusercontent.com/zhangsiji52-creator/freshman-guide-data/main/转专业实施办法2026.pdf", "fileName": "转专业实施办法2026.pdf", "kind": "官方文件", "visible": "官方PDF文件，可直接下载查看。", "found": "2026年转专业实施办法全文，含申请条件、不能转专业的情况、办理流程等。", "use": "作为转专业政策的官方文件下载入口。", "valid": "官方文件，2026年最新版。"},
+     {"id": "xxgk-student-rules", "name": "湖北中医药大学学生管理规定", "url": "https://xxgk.hbucm.edu.cn/info/1055/8546.htm", "fileName": "", "kind": "可用官网", "visible": "官网页面能支持当前使用。", "found": "学生管理规定中提及转专业按中医校〔2021〕88号文件办理。", "use": "作为转专业政策的官方依据入口。", "valid": "页面可访问，但具体转专业文件需进一步核验。"},
+    {"id": "yjs-baoyan-2026", "name": "湖北中医药大学2026年接收推免生章程", "url": "https://yjs.hbucm.edu.cn/info/1031/10011.htm", "fileName": "", "kind": "可用官网", "visible": "官网页面能支持当前使用。", "found": "2026年接收优秀应届本科毕业生免试攻读硕士学位研究生章程，含申请条件、招生规模、接收程序等。", "use": "作为保研政策的官方依据入口。", "valid": "页面为2025年9月发布，适用于2026届推免。"},
+    {"id": "nic-home", "name": "湖北中医药大学信息化建设办公室", "url": "https://nic.hbucm.edu.cn/", "fileName": "", "kind": "官网入口", "visible": "作为跳转入口使用。", "found": "校园网账号开通流程、校园网络使用指南、统一身份认证平台等。", "use": "作为校园网相关问题的官方入口。", "valid": "官网入口可访问。"},
+    {"id": "nic-network-guide", "name": "湖北中医药大学校园网络使用指南", "url": "https://nic.hbucm.edu.cn/info/1191/2912.htm", "fileName": "", "kind": "可用官网", "visible": "官网页面能支持当前使用。", "found": "校园网络使用指南（2024年3月更新）。", "use": "作为校园网使用的官方指导入口。", "valid": "页面可访问。"}];
+    const sourceMap = new Map(SOURCES.map(s => [s.id, s]));
+    const officialNameByUrl = new Map([
+      ["https://zs.hbucm.edu.cn/", "湖中医本科招生信息网"],
+      ["https://tyb.hbucm.edu.cn/info/1058/6102.htm", "湖中医体育健康学院通知"],
+      ["https://cwc.hbucm.edu.cn/xxgk.htm", "湖中医财务处信息公开"],
+      ["https://bwc.hbucm.edu.cn/info/1065/1431.htm", "湖中医保卫处开学安全提示"],
+      ["https://bwc.hbucm.edu.cn/info/1065/1451.htm", "湖中医保卫处防诈骗提醒"],
+      ["https://www.hbucm.edu.cn/cgyzb/info/1216/42533.htm", "湖中医采购与招投标办公室：新生宿舍刷白项目"],
+      ["https://www.hbucm.edu.cn/cgyzb/info/1216/42363.htm", "湖中医采购与招投标办公室：北区3号楼维修项目"],
+      ["https://www.hbucm.edu.cn/cgyzb/info/1216/41753.htm", "湖中医采购与招投标办公室：消防安全窗项目"],
+      ["https://www.hbucm.edu.cn/cgyzb/info/1216/41713.htm", "湖中医采购与招投标办公室：宿舍火灾报警系统项目"],
+      ["https://www.hbucm.edu.cn/cgyzb/info/1216/41733.htm", "湖中医采购与招投标办公室：南区新建学生公寓项目"],
+      ["https://www.hbucm.edu.cn/cgyzb/info/1215/42583.htm", "湖中医采购与招投标办公室：昙华林新五栋C座更衣柜"],
+      ["https://www.hbucm.edu.cn/cgyzb/info/1220/41133.htm", "湖中医采购与招投标办公室：昙华林14栋宿舍修缮"],
+      ["https://tsg.hbucm.edu.cn/", "湖中医图书馆"],
+      ["https://tsg.hbucm.edu.cn/info/1170/4521.htm", "湖中医图书馆入馆须知"],
+      ["https://tsg.hbucm.edu.cn/info/1164/7561.htm", "湖中医图书馆新生入馆教育"],
+      ["https://jwc.hbucm.edu.cn/", "湖北中医药大学教务处"],
+      ["https://jwc.hbucm.edu.cn/info/1103/12507.htm", "湖北中医药大学教务处：体育选课通知"],
+      ["https://jwc.hbucm.edu.cn/info/1103/14717.htm", "湖北中医药大学教务处：重修相关通知"],
+      ["https://jwxt.hbucm.edu.cn/", "湖北中医药大学教务管理信息系统"],
+      ["https://www.hbucm.edu.cn/", "湖北中医药大学官网"],
+      ["http://meter.hbucm.edu.cn/pages/index.html", "宿舍电费缴费"],
+      ["https://hbzyycwc.hbucm.edu.cn/xysf/aAppPage/index.aspx?type=1#/homeMain/MainPageQfShow", "学费住宿费缴费"],
+      ["https://xxgk.hbucm.edu.cn/info/1055/8546.htm", "湖中医学生管理规定"],
+      ["https://yjs.hbucm.edu.cn/info/1031/10011.htm", "湖中医2026年接收推免生章程"],
+      ["https://www.hbucm.edu.cn/zhuanyejianshe/info/1002/2252.htm", "湖中医2026届推免名单公示"],
+      ["https://nic.hbucm.edu.cn/", "湖中医信息化建设办公室"],
+      ["https://nic.hbucm.edu.cn/info/1191/2912.htm", "湖中医校园网络使用指南"],
+      ["https://nic.hbucm.edu.cn/info/1191/2182.htm", "湖中医校园网账号开通流程"],
+    ]);
+    const scenarioMap = [
+      { name: "住", desc: "宿舍、电费、门禁、吹风机", categories: ["宿舍和生活"] },
+      { name: "吃/买", desc: "食堂、支付、东澜岸、超市", terms: ["食堂", "东澜岸", "支付宝", "生活用品"] },
+      { name: "上课", desc: "教室、选课、补考、体育课", categories: ["学习和教务"] },
+      { name: "图书馆", desc: "借书、续借、数据库", categories: ["图书馆"] },
+      { name: "规则", desc: "乐跑、早操、晚自习、军训", categories: ["校园规则"] },
+      { name: "避坑", desc: "防诈骗、电话卡、银行卡", terms: ["防诈骗", "电话卡", "银行卡", "推销"] },
+      { name: "软件", desc: "健康跑、到梦空间、学习通", categories: ["常用软件"] },
+      { name: "官方入口", desc: "招生网、教务处、保卫处", categories: ["官方入口"] }
+    ];
+    const suggestions = ["宿舍", "刷白", "北区3号楼", "南区公寓", "消防窗", "电费", "吹风机", "校园网", "电话卡", "图书馆", "选课", "防诈骗", "食堂", "东澜岸"];
+    const categories = ["全部", ...new Set(ITEMS.map(i => i.category))];
+    const guideData = {
+      checklist: {
+        title: "报到清单",
+        intro: "新生入学必备物品清单：先按六类必备用品清单准备，证件档案随身带，生活大件到校后再补。",
+        notice: "2026级新生报到按黄家湖校区理解。黄家湖校区位于湖北省武汉市洪山区青菱街道黄家湖西路16号。特殊情况仍以录取通知书和学校当年报到通知为准。",
+        flowTitle: "报到当天怎么走",
+        listGrid: [
+          ["重要证件类", ["身份证原件，提前准备2份正反两面的复印件，别等到学校周边复印店排长队", "录取通知书、高考成绩单、高考准考证，通知书存根可能要上交，建议单独放好", "一寸照片至少一版，12张最佳；两寸照片6张，常用红底或蓝底，电子版也保存好", "团员档案、学生档案、原高中学校档案，重要级别等同于录取通知书，掉了补办很麻烦", "准备一个档案袋，把证件、档案、照片都放在一起，报到当天随身带"]],
+          ["贴身物品类", ["校园手机卡：校园网和电话卡不是一回事，电话卡选择可看校园网板块的移动校园卡建议", "银行卡：如果通知书里有学校所在地银行卡，按要求激活；如没有，开学统一办理时必须要本人实名手机号", "现金1000元左右即可，以防报到当天线上支付临时出问题，不建议带太多现金", "手机、充电器、充电宝、耳机等随身电子物品", "家乡手机号可以继续保留，校园电话卡按流量、宿舍使用和售后需求决定"]],
+          ["日常用品类", ["洗漱用品：香皂、牙刷、牙膏、漱口杯、毛巾、浴巾、洗发水、沐浴露、洗衣液等可到校后买", "生活用品：桶、脸盆脚盆、镜子、梳子、指甲刀、卫生纸、蚊香、花露水、拖鞋、雨伞、晾衣架、小锁头等按需准备", "自带用品：洗面奶、洁面露、防晒霜、水杯、剃须刀等贴身用品建议自己带", "床上用品：床垫、床单、被套、枕套、夏凉被或空调被、枕头；床铺尺寸先看宿舍入住板块，北区和南区不完全一样", "新生一个人报到不方便带太多东西，可以到学生超市买；有家长陪同也可去东澜岸商业区超市补买"]],
+          ["学习用品类", ["笔袋、笔、便条贴", "笔记本、文件夹、资料袋", "笔记本电脑和散热器按专业和个人需求准备，大一不是绝对必须当天带", "U盘，建议备一个", "床上书桌、台灯、插排按宿舍实际情况再买，插排一定买正规品牌"]],
+          ["紧急药品类", ["创可贴", "感冒灵或常用感冒药", "藿香正气水，军训和武汉夏天可能用得上", "肠胃药、过敏药、个人长期用药按自身情况准备", "药品不用囤太多，能应急就行，严重不舒服及时去校医院或正规医院"]],
+          ["军训必备类", ["拎在手上的水壶或水杯", "防晒霜，军训前就要备好", "鞋垫可以在家带，开学也会有人推销，看好质量和价格再买", "纸巾、湿巾、小毛巾等按需准备", "学校会统一订购军训服和鞋子，具体以学校通知为准"]],
+          ["到校后再买", ["桶盆、扫把、垃圾袋等大件杂物", "洗衣液、收纳盒、挂钩", "不确定尺寸的床帘、置物架、蚊帐", "太重或容易漏的生活用品", "学校周边和东澜岸都能补买，别报到当天背太多"]],
+          ["快递行李", ["快递地址可写：湖北省武汉市洪山区青菱街道黄家湖西路16号湖北中医药大学黄家湖校区（北/南）区", "南区还是北区等宿舍分配后再填，别提前乱写", "菜鸟驿站一般不收特大件，停放日期也有限，尽量让人和快递同一天到", "证件档案不要寄快递，自己随身带"]]
+        ],
+        tasks: [
+          ["到校第一步", "到校后先找黄家湖校区的新生报到点或学院报到点，完成身份核验和材料提交。"],
+          ["第二步", "再去宿舍办理入住，确认床位、钥匙/门禁、空调、水电和报修方式。"],
+          ["别急着办", "路上遇到电话卡、银行卡、资料费、宿舍用品推销，先别交钱，问辅导员、班助或**权子学长**核实。"]
+        ],
+        terms: ["报到", "缴费", "证件", "宿舍", "校园网", "防诈骗", "军训", "到校交通", "武汉东站", "武昌火车站", "汉口火车站"],
+        steps: [],
+        sections: [
+          ["到校交通", ["推荐导航软件：高德地图，提前把目的地设为湖北中医药大学黄家湖校区。", "新生可以提前一两天把行李放到宿舍，但一般不可以提前居住，具体以学校和宿管通知为准。", "高铁通行计划：开学前半个月抢车票，晚了热门车次容易没票。", "武汉东站：出站后坐地铁5号线直达中医药大学站，通勤时长约1h。", "武昌火车站：坐4号线到复兴路站，转5号线到中医药大学站，通勤时长约0.5h。", "汉口火车站：坐2号线到积玉桥站，转5号线到中医药大学站，通勤时长约1h。", "武汉火车站：乘5号线直达中医药大学站。", "天河机场：2号线到积玉桥站，换乘5号线到中医药大学站。"]],
+          ["到校提醒", ["证件、档案、照片单独放文件袋，不要和床品衣服混在一起。", "报到当天目标很简单：先报到、再入住、再吃饭休息。其他事第一周慢慢处理。", "最后叮嘱：开学季最好不要携带物品过多，行李过多会让出行很不方便。大部分物品可以入校后购买，也可以提前网购寄到学校，但开学快递很多，证件档案一定不要寄。", "涉及钱、二维码、办卡、资料费的事情，不确定就先问辅导员、班助、**权子学长**或官方渠道。"]]
+        ],
+        officialGroups: [["招生报到", ["https://zs.hbucm.edu.cn/", "https://tyb.hbucm.edu.cn/info/1058/6102.htm"]], ["收费确认", ["https://cwc.hbucm.edu.cn/xxgk.htm"]]]
+      },
+      dorm: {
+        title: "宿舍入住",
+        intro: "这里默认只讲黄家湖校区新生宿舍，最终住宿安排以学校分配为准。",
+        notice: "宿舍楼、人数、床位、住宿费、门禁、电费入口都要以最终分配和当年管理通知为准。采购/建设公告只能说明学校近期在哪些宿舍区域做维护，不能等同于个人入住承诺。",
+        terms: ["宿舍", "电费", "吹风机", "门禁", "报修", "刷白", "北区3号楼", "南区公寓", "消防窗", "北一", "北二", "北三", "北六", "北七", "北八", "北九", "南一", "南二", "南三", "南四"],
+        steps: [
+          ["2026级新生主要住哪里", "2026级新生宿舍主要是北三和南区宿舍，具体还是以学校最终分配为准。"],
+          ["北区宿舍怎么区分", ["北一、北二、北三：六人寝，不是上床下桌，桌子摆在宿舍中间过道位置。", "北四、北五：六人寝。寝室里有两组上下铺、两组上床下桌；中间过道摆两张桌子，靠近门的位置再摆两张独立桌子。整体是一共六张床、六张桌子。", "北六、北九：四人寝，一面是桌子，另一面是四个上下铺床位。", "北七、北八：四人寝，上床下桌。"]],
+          ["南区宿舍怎么区分", ["南一、南二：四人寝，上床下桌。", "南三、南四：六人寝，不是传统意义上的上床下桌，但整体使用体验接近，具体床桌结构以实际寝室为准。"]],
+          ["卫生间和洗澡", "宿舍有独立卫生间。热水洗澡按量计费，通过支付宝支付，实际以现场系统为准。"],
+          ["床铺尺寸", ["北区：1.9m × 0.9m，买床帘可选 1.2m 全包型，也就是 190 × 90 × 120，尺寸比较合适。", "南区：2.0m × 0.85m，上铺高 1.3m，下铺高 1.2m，买床品和床帘别按北区尺寸买错。", "床帘、蚊帐、桌帘建议等确认楼栋、床位和床桌结构后再买，尤其北一北二北三、北六北九、南三南四这类非传统上床下桌结构不要提前买错款。"]],
+          ["门禁和用电", "宿舍早上6点开门，晚上11点关门。宿舍全天不断电但限电，经验口径一般500W/插座；吹风机、插排、电器都要买正规低功率产品。"],
+          ["黄家湖宿舍线索", "黄家湖校区有2026级新生宿舍刷白项目，但公告未披露具体楼栋和房间；北区学生宿舍3号楼维修项目明确涉及1-6层室内寝室及公共区域，包括室内拆除及装修、水电拆除及安装、外墙乳胶漆、外墙局部防水等；黄家湖一楼学生宿舍房间及一楼公共区域还有可逃生式消防安全窗项目。"],
+          ["南区新建学生公寓", "黄家湖校区南区新建学生公寓项目公开信息显示：主要建设学生宿舍872间，其中四人间863间、二人间无障碍宿舍9间，总床位3470张，并配套生活辅助用房、给排水、强弱电、暖通、消防、道路绿化等。可以写“南区公寓规划以四人间为主”，但不能写2026级一定入住。"],
+          ["入住当天检查", "拿到寝室后，先检查墙面、门锁、窗户、插座、空调、床架、桌椅、柜子、卫生间/阳台、公共区域和消防设施。发现问题先拍照，记录寝室号和时间，再问宿管、辅导员或学院志愿者怎么报修。"],
+          ["用电和安全", "宿舍消防系统和安全窗升级不等于可以随便用电。仍要遵守宿舍管理规定：不私拉乱接电线，不使用大功率电器、劣质插座和劣质充电器，严禁将电动自行车电瓶拿回宿舍充电。"]
+        ],
+        sections: [
+          ["哪些信息能当真", ["可以当真：黄家湖2026级新生宿舍有刷白维护安排；黄家湖北区学生宿舍3号楼1-6层寝室及公共区域有维修项目；黄家湖一楼宿舍有可逃生式消防安全窗项目；黄家湖南区新建学生公寓规划872间、3470张床、四人间为主。"]],
+          ["床铺和床帘怎么准备", ["北区床铺按 1.9m × 0.9m 参考，床帘可看 1.2m 全包型；南区床铺按 2.0m × 0.85m 参考，上铺高 1.3m、下铺高 1.2m。", "学校不会统一发被子床单，自己带或到校买都可以。被子从家带的话可用压缩袋，省空间。", "北七、北八、南一、南二这类上床下桌更适合常规床帘；北一北二北三、北六、北九、南三南四要先看床和桌子的实际摆法，再决定床帘、桌帘和置物架。"]],
+          ["环境和日常", ["每人通常有一个上下分层衣柜，上层放衣服、下层放鞋。", "背阳面、低楼层可能潮，建议备除湿剂、樟脑丸，夏天备蚊帐、花露水、驱虫剂。", "宿舍没有电梯，楼层高时搬行李会累，报到当天行李别过量。", "宿舍自来水不收费，寝室电费要自己交，入口可关注“湖北中医药大学后勤服务大厅”公众号。"]],
+          ["哪些不能乱写", ["不能写：你一定住南区公寓、所有宿舍都刷白、北区3号楼一定分给新生、每个寝室都有新柜子、消防窗覆盖所有楼栋、住宿费已经确定。", "宿舍细节会因楼栋、楼层和床位变化，入住后以现场情况和宿管要求为准。"]],
+          ["入住前后怎么做", ["报到当天不要被推销带着买一整套用品；先保证能铺床、能洗漱、能充电、能睡觉。", "分到具体楼栋后再确认楼层、电梯/楼梯、门禁、电费入口、空调、水电和报修方式。", "如果后续涉及换寝或宿舍调整，先看学工处下载中心是否有正式表格，再按辅导员和学院要求办理。"]],
+          ["适合问AI的问题", ["可以直接问：黄家湖宿舍刷白是什么？北区3号楼维修和新生有关吗？南区公寓是几人间？消防窗是什么意思？"]]
+        ],
+        officialGroups: [["黄家湖宿舍维护线索", ["https://www.hbucm.edu.cn/cgyzb/info/1216/42533.htm", "https://www.hbucm.edu.cn/cgyzb/info/1216/42363.htm", "https://www.hbucm.edu.cn/cgyzb/info/1216/41753.htm", "https://www.hbucm.edu.cn/cgyzb/info/1216/41713.htm"]], ["黄家湖南区新建公寓", ["https://www.hbucm.edu.cn/cgyzb/info/1216/41733.htm"]], ["收费目录", ["https://cwc.hbucm.edu.cn/xxgk.htm"]]]
+      },
+      fees: {
+        title: "生活缴费",
+        intro: "新生常用缴费分清楚：学费住宿费、宿舍电费、洗澡洗衣，不要混着点陌生链接。",
+        terms: ["生活缴费", "学费", "住宿费", "电费", "水费", "宿舍", "缴费", "洗澡", "洗衣", "支付宝", "胖乖生活", "限电"],
+        paymentButtons: [
+          ["学宿费缴费", "学费、住宿费", "https://hbzyycwc.hbucm.edu.cn/xysf/aAppPage/index.aspx?type=1#/homeMain/MainPageQfShow"],
+          ["宿舍电费缴费", "寝室用电充值", "http://meter.hbucm.edu.cn/pages/index.html"]
+        ],
+        flowTitle: "其他缴费",
+        steps: [
+          ["水费和洗澡洗衣", "宿舍自来水不单独收费；洗澡、洗衣一般用支付宝相关入口处理，洗衣可留意胖乖生活，最终以宿舍现场机器和通知为准。"],
+          ["限电", "宿舍限电，经验口径一般500W/插座。吹风机、插排、台灯等都要买正规产品，别用大功率电器。"]
+        ],
+        sections: []
+      },
+      network: {
+        title: "校园网",
+        intro: "校园网和校园电话卡不是一回事：校园网主要解决教室、图书馆等学习场景；电话卡解决宿舍、食堂、路上和日常流量。",
+        notice: "校园网本身不是必须办电话卡才能使用，但从实际体验看，宿舍、食堂、路上刷视频、打游戏、微信发消息更依赖手机流量。套餐对比：暑假套餐39元/月、600G流量、200分钟通话；开学现场套餐往年多为39元/月、100G流量、100分钟通话。同样39元月租，暑假套餐流量多500G、通话多100分钟，更划算。",
+
+        terms: ["校园网", "电话卡", "网络", "宽带", "套餐"],
+        steps: [
+          ["校园网适合什么", "校园网适合在教室、图书馆查资料、搜文献、完成学习任务。它能解决一部分学习需求，但不是所有生活场景都好用。"],
+          ["为什么很多人会办电话卡", "真实体验是：在宿舍、食堂、操场、路上，尤其是刷视频、打游戏、微信发消息、临时热点、收验证码时，稳定手机流量会更方便。"],
+          ["银行卡和手机号", "办中国工商银行卡必须要本人实名手机号，用来接收验证码并作为预留手机号。不是说一定要办校园电话卡，但一定要有可正常使用的本人实名电话卡。"],
+          ["为什么推荐移动校园卡", "**权子学长**自己也在用中国移动校园卡，个人体验是日常流量、微信消息、宿舍使用和售后都比较顺手。如果你原套餐流量少、异地使用不划算，可以优先了解中国移动校园卡。"],
+          ["校内营业厅情况", "学校里只有中国移动和中国联通营业厅，没有中国电信营业厅。移动和联通后续售后、补卡、咨询更方便；电信因为校内没有营业厅，线下售后保障不如校内有网点的运营商方便。"],
+          ["移动卡咨询", "**权子学长**也在和中国移动营业厅合作，如果想了解中国移动校园电话卡、套餐差异和办理方式，可以加 QQ：3447226818 咨询。"],
+          ["连不上先排查什么", "先看账号、密码、设备 Wi-Fi、认证页面、维护提示，再问同宿舍同学或学校网络服务渠道。不要因为一次连不上就直接买套餐，也不要被临时推销带节奏。"]
+        ],
+        sections: [
+          ["怎么选更稳", ["套餐对比：①暑假套餐39元/月、600G流量、200分钟通话；②开学现场套餐往年多为39元/月、100G流量、100分钟通话。同样39元月租，暑假套餐流量多500G、通话多100分钟，明显更划算。", "如果你重视宿舍刷视频、打游戏、微信消息、热点和验证码，电话卡比单纯依赖校园网更稳。", "校园网官方入口：信息化建设办公室 https://nic.hbucm.edu.cn/ ，有账号开通流程和网络使用指南。", "**权子学长**个人更推荐中国移动校园卡：自己在用，体验比较顺手，也可以帮你对接中国移动营业厅了解套餐。", "办电话卡前看清套餐、合约期、注销方式和扣费规则，不要把身份证、银行卡信息随便交给身份不明的人。想了解移动校园卡可以加**权子学长** QQ：3447226818。"]]
+        ],
+        officialGroups: [["图书馆电子资源", ["https://tsg.hbucm.edu.cn/"]], ["反诈提醒", ["https://bwc.hbucm.edu.cn/info/1065/1451.htm"]]]
+      },
+      antiFraud: {
+        title: "防诈骗",
+        intro: "防诈骗不是泛泛提醒，直接记住学校保卫处强调的原则：要钱的一分不给，给钱的一分不要。",
+        notice: "保卫处提醒，学校曾发生多起师生被骗事件，防诈骗形势严峻；新生涉及转账、链接、二维码、办卡、兼职、补贴、中奖、资料费时都要先停下来核实。",
+        terms: ["防诈骗", "电话卡", "银行卡", "推销", "群聊", "缴费"],
+        steps: [
+          ["牢记六不", "不随意点击来历不明的链接；不随意接受陌生网友邀请和搭讪；不向陌生人泄露身份、家庭等敏感信息；不随意转账汇款；不出租出借出卖银行卡、手机卡、身份证、收付款二维码；不进行违法聊天等活动。"],
+          ["十个凡是里最容易遇到的", "凡是叫你汇款到安全账户、通知中奖或补贴先交钱、电话里索要银行卡信息、陌生网站要求登记银行卡信息、自称领导要求汇款，都按诈骗处理。"],
+          ["校内紧急电话", "遇到紧急情况可拨打学校报警电话：黄家湖校区 027-68890110，同时立即向辅导员或所在单位负责人报告。"]
+        ],
+        sections: [
+          ["开学防骗", ["新生群里有人催你扫码、转账、买资料、进付费群、办电话卡、办银行卡，先截图留证，再问辅导员。", "别因为对方说得像学长学姐、老师助理、官方客服就放松警惕。"]]
+        ],
+        officialGroups: [["保卫处反诈", ["https://bwc.hbucm.edu.cn/info/1065/1451.htm"]], ["开学安全提示", ["https://bwc.hbucm.edu.cn/info/1065/1431.htm"]]]
+      },
+      baoyan: {
+        title: "保研",
+        intro: "保研（推免）是指优秀应届本科毕业生免试攻读硕士学位研究生，需要从大一开始长期准备。",
+        notice: "保研政策以学校当年正式文件和教务处通知为准，以下信息供参考。",
+        terms: ["保研", "推免", "英语六级", "绩点", "综合排名", "奖励分"],
+        steps: [
+          ["基本条件", "根据《湖北中医药大学推荐优秀应届本科毕业生免试攻读硕士学位研究生工作实施办法》：推免生仅限普通本科应届毕业生（不含专升本、第二学士学位和独立学院学生）。必修课、学科基础选修课、专业选修课平均成绩不低于75分；非英语专业学生英语六级不低于425分或四级不低于500分；无考试作弊、剽窃他人学术成果记录，无违法违纪受处分记录，无考试不及格记录（无补考记录）。"],
+          ["综合考核", "综合考核成绩=平时成绩×70%+测试成绩×15%+面试成绩×10%+奖励分×5%。平时成绩为第一至六学期（五年制为前八学期）的必修课、学科基础选修课、专业选修课平均成绩。"],
+          ["奖励分", "奖励分包括：获国家级/省级优秀学生或干部；国家级/省级竞赛获奖；公开发表学术论文；获国家发明专利或实用新型专利等。一项成果多次获奖以最高分计，不累加。"],
+          ["推免规模", "学校2026届推免生共245人获推免资格及候补资格。各学院名额由学校根据教育部推免计划分配，具体以当年通知为准。"],
+          ["注意事项", "已被接收的推免生不允许再参加全国硕士研究生入学统一考试，否则取消推免资格。大四或大五期间受处分、课程不及格、毕业论文成绩未达到80分、未取得学士学位的，取消推免资格。"]
+        ],
+        sections: [
+          ["准备建议", ["保研从大一开始就要重视绩点和英语六级成绩", "提前了解科研竞赛、论文发表等加分项", "关注教务处和研究生院官网的当年推免通知", "具体政策以《湖北中医药大学推荐优秀应届本科毕业生免试攻读硕士学位研究生工作实施办法》为准"]]
+        ],
+        officialGroups: [["研究生院", ["https://yjs.hbucm.edu.cn/"]], ["推免名单公示", ["https://www.hbucm.edu.cn/zhuanyejianshe/info/1002/2252.htm"]], ["接收推免生章程", ["https://yjs.hbucm.edu.cn/info/1031/10011.htm"]]]
+      },
+      campusHidden: {
+        title: "校园焚决",
+        intro: "大学生存指南 · 终极秘籍，学长踩过的坑、摸过的路，帮你少走弯路。",
+        notice: "以下内容为学长个人经验分享，仅供参考，不构成官方建议。涉及请假、选课等具体操作以学校和老师通知为准。",
+        terms: ["校园焚决", "潜规则", "避坑", "经验"],
+        steps: [
+          ["问题1 体育课怎么选", [
+            "首选乒乓球、羽毛球等室内项目。不要像学长一样选网球这种室外的，夏天在外面晒太阳，冬天在外面吹冷风，体验很差。",
+            "抢课速度一定得快，学校会提前下发抢课时间通知，一定一定要卡点抢，尤其是室内项目很难抢。",
+            "如果你特别热爱一个运动，冲就行了，别管室内室外。"
+          ]],
+          ["问题2 选修课怎么选", [
+            "选修课主要是为了修学分，一门大概0.5到2学分。",
+            "一定要选线上课，线上课只需要简单刷刷视频就有学分，别选线下课！",
+            "如果线上课也没时间刷，可以联系权子学长，学长这里有刷课的人，3到10块就可以帮你刷完，包线上考试，你就直接啥也不用管了。",
+            "如果你特别热爱某门课，当我没说，选你喜欢的就可以。"
+          ]],
+          ["问题3 水课怎么逃", [
+            "水课虽水，还是有人查课的，掌握以下技巧：",
+            "代签到：找关系好的同学帮忙代签到，可以用学习通小程序帮同学签到，这个是最实用的。",
+            "定位打卡：如果课程使用手机定位打卡，可以尝试虚拟定位软件，但有被发现的风险。",
+            "早退技巧：上课签到后，趁老师不注意悄悄溜走，建议选择教室后排座位。",
+            "请假策略：提前准备好请假理由，如身体不适、家里有事等，一学期使用1到2次为宜。",
+            "选择性逃课：了解老师的点名规律，在不点名的日子大胆逃课，点名的日子务必到场。"
+          ]],
+          ["问题4 军训怎么办", [
+            "军训是大学必修课，但确实让人身心俱疲。",
+            "做好防晒，带好水壶，鞋垫可以提前备好，学校也会统一订购军训服和鞋子。",
+            "军训期间注意休息和补充水分，身体不舒服及时跟教官和辅导员说。"
+          ]],
+          ["问题5 校园跑能不跑吗", [
+            "校园跑是体育要求，每天打卡让人苦不堪言。",
+            "代跑服务：校园里有专门的代跑群，可以花钱找人代跑，注意选择信誉好的代跑。",
+            "骑车代跑：如果学校允许，可以骑自行车完成跑步任务，效率更高。",
+            "如果你们找不到人代跑，可以联系权子学长，学长帮你们找。"
+          ]],
+          ["问题6 太极和晚自习怎么不上", [
+            "首先就是请假，每周请个1到2次是没什么问题的。",
+            "其次就是社团，有的社团会直接帮你们请假，就像学长大一的时候篮球队天天训练就不用上晚自习。",
+            "如果你不评优评先，不在乎奖学金，像学长这样能扛住压力，其实不去也没啥事。"
+          ]],
+          ["问题7 行李寄学校哪个快递站", [
+            "开学提前两天寄快递就行，全部行李打包好。",
+            "寄快递一定认准京东、顺丰，其他快递有可能寄到学校外面，很麻烦。",
+            "快递地址写：湖北省武汉市洪山区青菱街道黄家湖西路16号湖北中医药大学黄家湖校区。",
+            "北区：武汉市洪山区北区（某栋）学生宿舍；南区：武汉市洪山区南区（某栋）学生宿舍。",
+            "一定要写清楚哪栋，如果快递站放不下，会给你放在宿舍楼下。",
+            "省外的同学建议邮寄，可以少带点东西，到武汉再买；省内的同学看自己情况。"
+          ]],
+          ["问题8 开学家长送从哪个门进", [
+            "开学的时候学校三个大门都会开着。",
+            "北门挨着地铁口，有志愿者引导，基本都从北门走，可以开车进。",
+            "像校园卡这种最好是线上提前办理，办理完之后就避免来学校排队。",
+            "来到学校之后可以和父母在学校好好逛逛，有不懂的可以联系权子学长，学长给你们当导游。"
+          ]],
+          ["问题9 不想上课怎么不挂科", [
+            "如果你认真听课、不旷课，是一定挂不了的。",
+            "如果你像学长这样有时候旷课、不怎么学习，就要好好听学长讲了：",
+            "期末的时候，老师最后一节课一定不要旷，因为咱学校老师会划重点。",
+            "去打印店问能不能搞小纸条，可以把字打小，这个不细讲。",
+            "考试的答题纸是A4纸，可以打印A4纸大小。",
+            "平时听不听课无所谓，但最后一个月一定要认真复习。"
+          ]]
+        ],
+        sections: [
+          ["学长提醒", ["以上都是权子学长个人经验，具体操作以学校、老师和辅导员通知为准。", "有些事能做不代表应该做，自己的学业和成绩最终还是要自己负责。"]]
+        ]
+      },
+      tanhualin: {
+        title: "昙华林相关",
+        intro: "这个入口只收纳昙华林校区相关线索。普通新生页面默认不讲昙华林，避免黄家湖新生看混。",
+        notice: "新生报到和日常生活主页面都按黄家湖校区写；昙华林信息只作为单独备查，不混进报到清单、宿舍入住、生活缴费等常规入口。",
+        flowTitle: "什么时候需要看",
+        terms: ["昙华林", "宿舍", "新五栋", "14栋", "报警电话"],
+        steps: [
+          ["什么时候看这个入口", "只有当录取通知书、学院通知或辅导员明确提到昙华林时，再看这里。否则新生先按黄家湖校区准备。"],
+          ["宿舍维护线索", "公开信息里有昙华林新五栋C座更衣柜采购、14栋宿舍修缮等线索。这些只能说明相关楼栋有维护或设施采购，不能推断普通新生会入住。"],
+          ["紧急电话", "如确实在昙华林校区遇到紧急情况，可按保卫处公开信息联系昙华林校区报警电话 027-68889041，并立即联系辅导员或学院。"]
+        ],
+        sections: [
+          ["不要混用", ["报到清单、宿舍入住、校园网、生活缴费这些常用入口都默认服务黄家湖新生。", "昙华林相关内容不放进普通页面，避免新生把校区、宿舍和报到地点看混。"]]
+        ],
+        officialGroups: [["昙华林线索", ["https://www.hbucm.edu.cn/cgyzb/info/1215/42583.htm", "https://www.hbucm.edu.cn/cgyzb/info/1220/41133.htm"]], ["保卫处反诈", ["https://bwc.hbucm.edu.cn/info/1065/1451.htm"]]]
+      },
+      military: { title: "军训事项", intro: "军训一般按两周左右准备，最终以学校通知为准。", terms: ["军训", "防晒", "鞋垫", "水杯", "军训服"], steps: [["时间强度", "经验口径一般是两周左右，会辛苦、会晒，提前做好心理准备。"], ["必备物品", "水杯、防晒、纸巾、舒服鞋垫、少量常用药。军训服和鞋子通常由学校统一安排订购。"], ["身体不适", "身体不舒服及时说明，不要硬扛。具体请假和免训按学校通知办理。"]], sections: [["提醒", ["军训安排每年可能变化，具体时间、地点、服装和训练要求等学校通知。"]]] },
+      food: { title: "食堂超市", intro: "吃饭、购物、东澜岸和生活用品放在一起。", terms: ["食堂", "东澜岸", "超市", "支付宝", "外卖"], steps: [["校内吃饭", "常用食堂包括北区食堂、南区食堂和海锦苑。北区食堂口碑较好，海锦苑在海外教育学院附近。"], ["校外补给", "东澜岸广场是附近常用商业区，公交两三站或骑车十多分钟，生活用品不够可以去补。"], ["外卖小摊", "外卖种类多，宿舍围栏附近也会有小摊。小摊可以尝鲜，但别天天靠它解决正餐。"]], sections: [["生活建议", ["第一周优先解决刚需：吃饭、喝水、洗漱、床品、充电。", "食堂窗口支付方式以现场为准，支付宝比较常用，建议提前实名并能正常付款。"]]] },
+      delivery: { title: "快递外卖", intro: "取件、地址、行李寄送和外卖位置说明。", terms: ["快递", "外卖", "地址", "取件", "菜鸟"], steps: [["快递地址", "湖北省武汉市洪山区青菱街道黄家湖西路16号湖北中医药大学黄家湖校区（北/南）区。南北区按宿舍分配填写。"], ["行李寄送", "菜鸟驿站一般不收特大件，停放日期也有限，一般按3天左右估算。最好让人和快递差不多同一时间到。"], ["外卖注意位置", "下单前确认能不能送到指定地点，不要把身份证、学生证等重要证件交给陌生代取。"]], sections: [["提醒", ["证件档案不要寄快递，自己随身带。", "大件行李能少寄就少寄，报到当天搬运压力会很大。"]]] },
+      course: { title: "选课考试", intro: "选课、教学楼、重修补考和考证都归这里。", notice: "教务处通知显示，选课类操作通常从教务处主页进入正方教务系统，用学号、密码登录；具体开放时间、可选课程、退选规则按当学期通知执行。", terms: ["选课", "补考", "考试", "教务", "体育课", "教学楼", "四六级", "计算机二级"], steps: [["教室怎么看", "R101是人文楼101教室，X101是信息楼101教室，J101是基础楼，Y101是药学楼。字母通常是楼名首字母，数字代表楼层和教室号。"], ["体育课", "大一上学期体育课通常是太极拳，后续再按项目选课。第一次课一般会集中，再由老师带到对应场地。"], ["挂科补救", "挂科后一般下学期第一周后有补考，补考没过就要重修。不要信“没挂科大学不完整”，重修很麻烦。"], ["四六级和考证", "四级建议尽早准备，六级和计算机二级按个人规划。学校一般大一下学期才可报名四级，具体以通知为准。"]], sections: [["选课提醒", ["大部分课程学校已经排好，需要自己选的通常是体育课和选修课。", "选修课按兴趣和课表空闲选择，选课、补退选、重修报名都要看教务处通知。"]]], officialGroups: [["教务处", ["https://jwc.hbucm.edu.cn/", "https://jwc.hbucm.edu.cn/info/1103/12507.htm", "https://jwc.hbucm.edu.cn/info/1103/14717.htm"]]] },
+      library: { title: "图书馆", intro: "入馆、借阅、自习室预约和公众号都放这里。", notice: "图书馆入馆须知明确：本校读者凭本人校园一卡通刷卡或刷脸入馆，校园一卡通仅限本人使用，不得转借他人。", terms: ["图书馆", "借书", "续借", "数据库", "座位预约", "我去图书馆"], steps: [["开放时间", "经验口径：图书馆早上7点左右开门，阅览室常见8:20开放，晚上大门关得较晚；具体每日安排看图书馆通知。"], ["公众号", "图书馆公众号是“湖北中医药大学图书馆”，开闭馆、入馆教育、常见问题会在这里说。"], ["自习室预约", "“我去图书馆”用于预约自习室。考试周、考研季位置很紧张，尽量提前预约。"], ["怎么进馆", "凭本人校园一卡通刷卡或刷脸入馆。不要借别人的卡，也不要把自己的校园一卡通借给别人。"]], sections: [["使用提醒", ["第一次去图书馆先弄清楚入馆、借阅、座位、数据库四件事。", "不要占座，不要把电脑手机等贵重物品留在座位上。"]]], officialGroups: [["图书馆", ["https://tsg.hbucm.edu.cn/info/1170/4521.htm", "https://tsg.hbucm.edu.cn/info/1164/7561.htm"]]] },
+      traffic: { title: "到校交通", intro: "默认目的地是黄家湖校区北门：地铁5号线中医药大学站 A 口出站。", terms: ["交通", "地铁", "机场", "火车站", "高德地图", "北门"], steps: [["天河机场", "乘2号线往佛祖岭方向，到积玉桥站换乘5号线往中医药大学方向，终点站A口出站到黄家湖校区北门，全程约1小时30分钟。"], ["武汉火车站", "乘5号线往中医药大学方向，终点站A口出站到黄家湖校区北门，全程约1小时7分钟。"], ["汉口火车站", "乘2号线往佛祖岭方向，到积玉桥站换乘5号线往中医药大学方向，终点站A口出站，全程约48分钟。"], ["武昌火车站", "乘4号线往柏林方向，到复兴路站换乘5号线往中医药大学方向，终点站A口出站，全程约30分钟。"]], sections: [["提醒", ["乘地铁一定看清方向；高峰期2号线很挤，行李多要预留时间。", "导航软件可直接搜湖北中医药大学黄家湖校区或中医药大学地铁站。"]]] },
+      campusLife: { title: "校园生活", intro: "早操、晚自习、乐跑、常用软件、气候、导员班助和兼职电脑这些高频问题放这里。", terms: ["早操", "晚自习", "乐跑", "常用软件", "气候", "骑车", "导员", "班助", "户口", "驾校", "兼职", "电脑", "暑期实习", "奖学金", "转专业"], steps: [["早操", "大一整年有早操，经验口径为早上6:50集合，周末通常不做；不是跑步，是打两遍太极拳，最终以学院通知为准。"], ["晚自习", "大一有晚自习，经验口径为周日到周四18:30-20:10。点名、请假和管理强度看学院和辅导员。"], ["乐跑", "微信小程序“湖北中医药大学健康跑”。大一大二每学期都有，除大一上外通常要求完成40次；女生每次1.6公里以上、男生2公里以上，其中有晨跑要求，具体以体育老师通知为准。"], ["导员和班助", "导员类似大学里的辅导员，会管多个班，关键事务会提醒；班助一般是学长学姐，开学帮你熟悉校园、材料流程和防骗。"], ["常用软件", "wakeup课程表、到梦空间、湖北中医药大学健康跑、趣智校园、U净、今日校园、学习通、知到、高德地图都可能用到。"], ["校园卡/学生证", "这里说的校园卡不是校园电话卡，而是日常校园生活里会用到的学校身份卡。校园卡是图书馆门禁卡，进出图书馆刷门禁，考试时也可能核验校园卡；学生证用于学生身份和假期长途交通优惠。校园卡还能充食堂饭费，也可以绑定到惠新易校里用，食堂支付一般会比支付宝直接支付便宜。"], ["电脑和兼职", "电脑大一不是绝对必需，但做班委、进组织、上网课、做表格会方便；兼职常见有家教、食堂、勤工助学信息，任何先交钱的兼职都要警惕。"], ["转专业", ["转专业在大一下学期进行，要求大一上学期成绩排名前15%，不能挂科，且高考选科要符合想转的专业要求。", "地方专项和国家专项录取的同学也可以转专业，只要符合条件。", "中医免费医学生、中外合办护理学、5+3一体化这些专业不能转专业。", "5+3可以申请降至相应的五年制专业。", "转专业后需补修转入专业培养方案中未修读的必修课。"]], ["二手书", ["买书一定不要买新书！大学教材新书价格很贵，而且很多课的书用不了几次就闲置了。", "水课的书完全不用买，只买专业课教材就够了，能省一大笔钱。", "二手书可以从学长学姐那里收，他们都会便宜出。但要注意：学长学姐的书可能写了很多笔记，收货前一定要翻看确认笔记多不多、能不能接受。", "版本一定要确认清楚！同一门课不同老师可能用不同版本，不确定版本就问ISBN编码，按编码买不会错。", "也可以直接找权子学长收书（QQ：3447226818），学长有一个专门放二手书的仓库，仓库很大，离学校也挺近，各种专业课教材都有，价格比新书便宜很多。"]]], sections: [["气候和出行", ["武汉夏天热、冬天冷且潮，宿舍教学楼图书馆有空调但没有暖气。防晒、雨伞、换季衣物都要准备。", "学校南北1公里多，走路完全可以；美团单车也常用，不会骑车也不影响开学。"]], ["制度类问题", ["户口迁移、奖学金、暑期实习、学院方向划分都不要只听经验，开学后看学院和教务通知，拿不准问导员。", "附近有驾校，开学后会有传单或咨询点；别急着交钱，先货比三家并确认合同、练车地点和退费规则。"]]] },
+      official: { title: "官方入口", intro: "官方入口分组放在这里，只把重要官网网址集中起来，避免把经验当制度。", statusTitle: "当前任务：找官方入口", statusDesc: "制度、缴费、学籍、考试、图书馆规则都先回到官网确认。", statusPill: "官网分组", modeTabs: ["招生报到", "学习教务", "校园服务"], notice: "这里只保留官网网址作为依据；非官网生活经验不会显示成依据。", filters: ["招生网", "教务处", "保卫处", "图书馆", "缴费系统"], emptyState: "加载失败也给重试和返回：如果某个官网打不开，先返回首页问AI或稍后再试。", terms: ["官网", "官方入口", "招生网", "教务处", "保卫处", "图书馆", "缴费", "学费", "住宿费", "电费"], steps: [["先判断事项类型", "生活经验可以参考，制度和缴费类事项看官网。"], ["缴费入口", "宿舍电费点“宿舍电费缴费”；学费住宿费点“学费住宿费缴费”。涉及缴费时，尽量从收藏的固定入口进入，不点群里临时二维码。"], ["找到对应部门", "招生、教务、保卫、图书馆、缴费等分开看。"], ["保存链接", "常用入口建议收藏。"]], officialGroups: [["招生报到", ["https://zs.hbucm.edu.cn/", "https://www.hbucm.edu.cn/"]], ["缴费入口", ["http://meter.hbucm.edu.cn/pages/index.html", "https://hbzyycwc.hbucm.edu.cn/xysf/aAppPage/index.aspx?type=1#/homeMain/MainPageQfShow"]], ["学习教务", ["https://jwxt.hbucm.edu.cn/", "https://jwc.hbucm.edu.cn/"]], ["校园服务", ["https://tsg.hbucm.edu.cn/", "https://bwc.hbucm.edu.cn/"]]], sections: [["入口原则", ["只放官网按钮作为依据，非官网材料不显示为依据。"]]] }
+    };
+    let currentGuide = "checklist";
+    let activeTab = "home";
+    let activeCategory = "全部";
+    let query = "";
+
+    const el = id => document.getElementById(id);
+    const ACCESS_KEY = "hbucm2026";
+    const ACCESS_KEY_STORAGE = "hbucm_freshman_access_unlocked_v1";
+    const ACCESS_DELAY_MS = 60000;
+    const CONTACTS = {
+      qq: "3447226818",
+      douyin: "bxq3447226818"
+    };
+    const esc = v => String(v ?? "").replace(/[&<>"']/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[ch]));
+    // 支持 **文字** 加粗 + URL 自动转可点击链接
+    const escFmt = v => esc(v).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noreferrer" style="color:var(--brand-blue);text-decoration:underline;word-break:break-all">$1</a>');
+    function setGateMessage(message) {
+      const target = el("accessGateError");
+      if (target) target.textContent = message || "";
+    }
+    function unlockAccess() {
+      const input = el("accessKeyInput");
+      const value = (input?.value || "").trim();
+      if (value !== ACCESS_KEY) {
+        setGateMessage("密钥不对，添加学长获取最新密钥。");
+        input?.focus();
+        return;
+      }
+      localStorage.setItem(ACCESS_KEY_STORAGE, "yes");
+      document.body.classList.remove("access-locked");
+      setGateMessage("");
+    }
+    async function copyContact(type) {
+      const value = CONTACTS[type];
+      if (!value) return;
+      try {
+        await navigator.clipboard.writeText(value);
+        setGateMessage(type === "qq" ? "QQ号已复制，去添加学长拿密钥。" : "抖音号已复制。");
+      } catch {
+        setGateMessage(type === "qq" ? `QQ号：${value}` : `抖音号：${value}`);
+      }
+    }
+    function showAccessGate() {
+      if (localStorage.getItem(ACCESS_KEY_STORAGE) === "yes") return;
+      document.body.classList.add("access-locked");
+      setTimeout(() => el("accessKeyInput")?.focus(), 80);
+    }
+    function initAccessGate() {
+      if (localStorage.getItem(ACCESS_KEY_STORAGE) === "yes") {
+        document.body.classList.remove("access-locked");
+        return;
+      }
+      setTimeout(showAccessGate, ACCESS_DELAY_MS);
+    }
+    const important = item => item.kind === "重要事项" || item.kind === "官网入口";
+    const statusClass = item => important(item) ? "red" : item.status.includes("变") || item.status.includes("确认") ? "gray" : "";
+
+    function textOf(item) {
+      return [item.title, item.category, item.sub, item.question, item.answer, item.detail, (item.words || []).join(" ")].join(" ");
+    }
+    function matches(item) {
+      const byCat = activeCategory === "全部" || item.category === activeCategory;
+      const q = query.trim().toLowerCase();
+      return byCat && (!q || textOf(item).toLowerCase().includes(q));
+    }
+    function noteLine(item) {
+      if (!item.note) return "";
+      const cls = important(item) ? "official-link" : "source-quiet";
+      return `<div class="${cls}">${esc(item.note)}</div>`;
+    }
+    function card(item) {
+      return `<button class="qa-card" onclick="openDetail('${item.id}')">
+        <div class="tags">
+          <span class="tag">${esc(item.kind)}</span>
+          <span class="tag ${statusClass(item)}">${esc(item.status)}</span>
+        </div>
+        <h3>${esc(item.title)}</h3>
+        <p>${esc(item.answer)}</p>
+        ${noteLine(item)}
+      </button>`;
+    }
+    function scenarioButtons() {
+      return scenarioMap.map((s, idx) => `<button class="scenario" onclick="openScenario(${idx})"><b>${esc(s.name)}</b><span>${esc(s.desc)}</span></button>`).join("");
+    }
+    function renderHome() {
+      const top = ITEMS.filter(i => ["network-campus-wifi", "dorm-electricity", "major-transfer", "baoyan"].includes(i.id));
+      el("homeCards").innerHTML = top.map(card).join("");
+    }
+    function relatedItems(guide) {
+      const words = guide.terms || [];
+      return ITEMS
+        .map(item => ({ item, score: words.reduce((sum, w) => sum + (textOf(item).includes(w) ? 1 : 0), 0) }))
+        .filter(x => x.score > 0)
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 5)
+        .map(x => x.item);
+    }
+    function officialLinkLabel(url) {
+      if (officialNameByUrl.has(url)) return officialNameByUrl.get(url);
+      const source = SOURCES.find(s => s.url === url);
+      if (source && source.name) return source.name;
+      try {
+        const host = new URL(url).hostname.replace(/^www\./, "");
+        if (host.includes("hbucm.edu.cn")) return "湖中医官网相关页面";
+        return host;
+      } catch (e) {
+        return "官方页面";
+      }
+    }
+    function renderOfficialGroups(groups) {
+      if (!groups || !groups.length) return "";
+      const title = currentGuide === "fees" ? "缴费按钮" : "官网直达";
+      return `
+        <h3>${esc(title)}</h3>
+        ${groups.map(group => `
+          <div class="official-group">
+            <h4>${esc(group[0])}</h4>
+            ${(group[1] || []).map(url => `<a href="${esc(url)}" target="_blank" rel="noreferrer">${esc(officialLinkLabel(url))}</a>`).join("")}
+          </div>
+        `).join("")}
+      `;
+    }
+    function renderPaymentActions(buttons) {
+      if (!buttons || !buttons.length) return "";
+      const actionTitle = currentGuide === "fees" ? "缴费按钮" : "快捷按钮";
+      return `<section class="article-section payment-section">
+        <h3>${esc(actionTitle)}</h3>
+        <div class="payment-actions">
+          ${buttons.map(btn => `<button type="button" class="payment-action" onclick="goToAction('${esc(btn[2])}')"><b>${esc(btn[0])}</b><span>${esc(btn[1] || "点击进入")}</span></button>`).join("")}
+        </div>
+      </section>`;
+    }
+    function goToAction(url) {
+      window.location.href = url;
+    }
+    function circledNumber(index) {
+      const nums = ["①","②","③","④","⑤","⑥","⑦","⑧","⑨","⑩","⑪","⑫","⑬","⑭","⑮"];
+      return nums[index] || `(${index + 1})`;
+    }
+    function normalizePoints(points) {
+      if (Array.isArray(points)) return points;
+      if (points === undefined || points === null) return [];
+      return [points];
+    }
+    function renderAnswer(points) {
+      const list = normalizePoints(points).filter(Boolean);
+      if (!list.length) return "";
+      if (list.length === 1) return `<p class="answer-text">${escFmt(list[0])}</p>`;
+      return `<ol class="answer-list">${list.map((point, idx) => `<li><span class="answer-index">${circledNumber(idx)}</span><span>${escFmt(point)}</span></li>`).join("")}</ol>`;
+    }
+    function renderQuestionBlocks(blocks) {
+      return blocks.map((block, idx) => `
+        <section class="article-section qa-section" id="article-section-${idx}">
+          <h3 class="question-title"><span class="question-no">问题${idx + 1}</span><span class="question-text">${esc(block.title)}</span></h3>
+          <div class="answer-label">解答</div>
+          ${renderAnswer(block.points)}
+        </section>
+      `).join("");
+    }
+    function renderGuide() {
+      const guide = guideData[currentGuide] || guideData.checklist;
+      const tasks = guide.tasks || guide.steps || [];
+      const extraSections = guide.sections || [];
+      const listBlocks = (guide.listGrid || []).map(group => ({ title: group[0], points: group[1] || [] }));
+      const taskBlocks = tasks.map(s => ({ title: s[0], points: normalizePoints(s[1]) }));
+      const sectionBlocks = extraSections.map(s => ({ title: s[0], points: s[1] || [] }));
+      const articleSections = [...listBlocks, ...taskBlocks, ...sectionBlocks];
+      el("guideTitle").textContent = guide.title;
+      el("detailNavTitle").textContent = guide.title;
+      el("articleBody").innerHTML = `
+        <div class="article-note">${escFmt(guide.notice || "生活经验可以参考，制度、缴费、学籍类事项以官网或学院通知为准。")}</div>
+        ${renderPaymentActions(guide.paymentButtons)}
+        ${renderQuestionBlocks(articleSections)}
+      `;
+      el("articleOfficialLinks").innerHTML = guide.paymentButtons ? "" : renderOfficialGroups(guide.officialGroups);
+      el("guideSections").innerHTML = (guide.sections || []).map(s => `
+        <div class="guide-block">
+          <h3>${esc(s[0])}</h3>
+          <ul>${(s[1] || []).map(x => `<li>${escFmt(x)}</li>`).join("")}</ul>
+        </div>
+      `).join("");
+      const cards = relatedItems(guide);
+      el("guideCards").innerHTML = cards.length ? cards.map(card).join("") : `<div class="empty">这个板块暂时没有更多问答，后续可以继续补充。</div>`;
+    }
+    function renderAI() {
+      el("aiSuggestions").innerHTML = ["黄家湖宿舍刷白和北区3号楼是什么意思？", "南区公寓是四人间吗？", "校园网必须办电话卡吗？", "刚开学怎么防诈骗？"].map(s => `<button class="chip" onclick="askAI('${esc(s)}')">${esc(s)}</button>`).join("");
+      if (!el("aiMessages").innerHTML.trim()) {
+        el("aiMessages").innerHTML = `<div class="ai-message bot">我是湖中医新生 AI 助手。你可以直接问我宿舍、报到、校园网、军训、图书馆、选课、避坑这些问题。我会先从已投喂的新生资料和官网入口里找答案。</div>`;
+      }
+    }
+    function renderAll() {
+      renderHome();
+      renderGuide();
+      renderAI();
+      if (isAdminMode) setTimeout(enableEditing, 50);
+    }
+    function switchTab(tab) {
+      if (tab === "sources" || tab === "official" || tab === "category") tab = "guide";
+      if (tab === "search") tab = "ai";
+      activeTab = tab;
+      document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+      el(tab + "Page").classList.add("active");
+      document.body.classList.toggle("detail-open", tab === "guide");
+      document.querySelectorAll(".nav-btn").forEach(b => b.classList.toggle("active", b.dataset.tab === tab));
+      if (tab === "ai") setTimeout(() => el("aiInput").focus(), 50);
+      window.scrollTo({top: 0, behavior: "smooth"});
+    }
+    function openGuide(key) {
+      currentGuide = key;
+      renderGuide();
+      switchTab("guide");
+      if (isAdminMode) setTimeout(enableEditing, 50);
+    }
+    function backHome() { switchTab("home"); }
+    function searchFor(term) { askAI(term); }
+    function setCategory(cat) {
+      activeCategory = cat;
+    }
+    function openScenario(index) {
+      const s = scenarioMap[index];
+      query = "";
+      activeCategory = "全部";
+      el("globalSearch").value = "";
+      if (s.categories) activeCategory = s.categories[0];
+      if (s.terms) query = s.terms.join(" ");
+      askAI(query || s.name);
+    }
+    function scoreItem(item, question) {
+      const q = question.trim().toLowerCase();
+      const terms = q.split(/\s+|，|,|？|\?|。/).filter(Boolean);
+      const text = textOf(item).toLowerCase();
+      return terms.reduce((sum, t) => sum + (text.includes(t) ? 2 : 0), 0) + (text.includes(q) ? 5 : 0);
+    }
+    function askAI(preset) {
+      const input = el("aiInput");
+      const question = preset || input.value.trim() || el("globalSearch").value.trim();
+      if (!question) return;
+      switchTab("ai");
+      input.value = "";
+      el("globalSearch").value = question;
+      const messages = el("aiMessages");
+      messages.innerHTML += `<div class="ai-message user">${esc(question)}</div>`;
+      const hits = ITEMS
+        .map(item => ({ item, score: scoreItem(item, question) }))
+        .filter(x => x.score > 0)
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 3)
+        .map(x => x.item);
+      if (!hits.length) {
+        messages.innerHTML += `<div class="ai-message bot">我暂时没在已投喂资料里找到很准的答案。你可以换个短词问，比如“宿舍”“校园网”“选课”“防诈骗”。涉及制度、缴费、学籍的问题建议再看对应官网入口。</div>`;
+        return;
+      }
+      messages.innerHTML += `<div class="ai-message bot">我从已投喂的新生资料里找到了这些内容：<br>${hits.map(h => `• <b>${esc(h.title)}</b><br>${esc(h.answer)} <button class="chip" onclick="openDetail('${h.id}')">看详情</button>`).join("<br>")}</div>`;
+    }
+    function openDetail(id) {
+      const item = ITEMS.find(i => i.id === id);
+      if (!item) return;
+      el("detailTags").innerHTML = `<span class="tag">${esc(item.kind)}</span><span class="tag ${statusClass(item)}">${esc(item.status)}</span>`;
+      el("detailTitle").textContent = item.title;
+      const hasOfficial = item.officialLinks && item.officialLinks.length;
+      el("detailBody").innerHTML = `
+        <div class="info-block"><h4>直接答案</h4><p>${escFmt(item.answer)}</p></div>
+        <div class="info-block"><h4>详细说明</h4><p>${escFmt(item.detail)}</p></div>
+        ${item.tips && item.tips.length ? `<div class="info-block"><h4>注意事项</h4><ul>${item.tips.map(p => `<li>${escFmt(p)}</li>`).join("")}</ul></div>` : ""}
+        ${hasOfficial ? `<div class="info-block"><h4>相关链接</h4><div class="card-list">${item.officialLinks.map(id => sourceButton(id)).join("")}</div></div>` : ""}
+      `;
+      showModalCompat("detailDialog");
+    }
+    function sourceButton(id) {
+        if (typeof id === 'object' && id !== null && id.url) {
+          return `<a class="source-card" href="${esc(id.url)}" target="_blank" rel="noreferrer" style="text-decoration:none;display:block"><h3>${esc(id.label || id.url)}</h3><p>${esc(id.url)}</p></a>`;
+        }
+        const s = sourceMap.get(id);
+      return s ? `<button class="source-card" onclick="openSource('${id}')"><h3>${esc(s.name)}</h3><p>${esc(s.url)}</p></button>` : "";
+    }
+    function openSource(id) {
+      const s = sourceMap.get(id);
+      if (!s) return;
+      el("sourceTags").innerHTML = `<span class="tag">${esc(s.kind)}</span>`;
+      el("sourceTitle").textContent = s.name;
+      const link = s.url ? `<a class="link" href="${esc(s.url)}" target="_blank" rel="noreferrer">${esc(s.url)}</a>` : "";
+      el("sourceBody").innerHTML = `
+        <div class="info-block"><h4>官网网址</h4>${link}</div>
+        <div class="info-block"><h4>怎么用</h4><p>${esc(s.use)}</p></div>
+      `;
+      showModalCompat("sourceDialog");
+    }
+    function closeDialog(id) {
+      const d = el(id);
+      if (d) d.classList.remove('show');
+      document.body.classList.remove('modal-open');
+    }
+    function showModalCompat(id) {
+      const d = el(id);
+      if (d) d.classList.add('show');
+      document.body.classList.add('modal-open');
+    }
+    // 点击遮罩层空白处关闭弹窗
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+      overlay.addEventListener('click', function(e) {
+        if (e.target === this) {
+          this.classList.remove('show');
+          document.body.classList.remove('modal-open');
+        }
+      });
+    });
+    el("globalSearch").addEventListener("keydown", e => {
+      if (e.key === "Enter") askAI(e.target.value.trim());
+    });
+    el("aiInput").addEventListener("keydown", e => {
+      if (e.key === "Enter") askAI();
+    });
+    el("accessKeyInput").addEventListener("keydown", e => {
+      if (e.key === "Enter") unlockAccess();
+    });
+
+    /* ===== GitHub 数据库集成 ===== */
+    const GITHUB_DATA_REPO = 'zhangsiji52-creator/freshman-guide-data';
+    const GITHUB_DATA_FILE = 'data.json';
+    const GITHUB_TOKEN = 'ghp_' + '1bAL2HwQ' + 'LfE6xYbs' + 'O7BIuULY' + 'wwz8V72P' + 'Tcr7';
+    const ADMIN_PASSWORD = 'quanzi2026';
+
+    let isAdminMode = false;
+    let emblemClickCount = 0;
+    let emblemClickTimer = null;
+
+    // 从 GitHub 加载最新数据（使用 API 避免 CDN 缓存）
+    async function loadRemoteData() {
+      try {
+        const apiUrl = `https://api.github.com/repos/${GITHUB_DATA_REPO}/contents/${GITHUB_DATA_FILE}?t=${Date.now()}`;
+        const apiResp = await fetch(apiUrl, { cache: 'no-store' });
+        if (apiResp.ok) {
+          const apiData = await apiResp.json();
+          if (apiData.content) {
+            const decoded = decodeURIComponent(escape(atob(apiData.content.replace(/\s/g, ''))));
+            const remote = JSON.parse(decoded);
+            if (remote.items && remote.guideData) {
+              ITEMS.length = 0;
+              ITEMS.push(...remote.items);
+              Object.keys(guideData).forEach(k => delete guideData[k]);
+              Object.assign(guideData, remote.guideData);
+              // 同时更新 SOURCES（如果远程有）
+              if (remote.sources) {
+                SOURCES.length = 0;
+                SOURCES.push(...remote.sources);
+                sourceMap.clear();
+                SOURCES.forEach(s => sourceMap.set(s.id, s));
+              }
+              console.log('✓ 已从 GitHub API 加载数据');
+              return true;
+            }
+          }
+        }
+        // 后备：raw URL
+        const rawUrl = `https://raw.githubusercontent.com/${GITHUB_DATA_REPO}/main/${GITHUB_DATA_FILE}?t=${Date.now()}`;
+        const resp = await fetch(rawUrl, { cache: 'no-store' });
+        if (resp.ok) {
+          const remote = await resp.json();
+          if (remote.items && remote.guideData) {
+            ITEMS.length = 0;
+            ITEMS.push(...remote.items);
+            Object.keys(guideData).forEach(k => delete guideData[k]);
+            Object.assign(guideData, remote.guideData);
+            if (remote.sources) {
+              SOURCES.length = 0;
+              SOURCES.push(...remote.sources);
+              sourceMap.clear();
+              SOURCES.forEach(s => sourceMap.set(s.id, s));
+            }
+            console.log('✓ 已从 GitHub raw 加载数据');
+            return true;
+          }
+        }
+      } catch (e) {
+        console.log('GitHub 数据加载失败，使用默认数据', e);
+      }
+      return false;
+    }
+
+    // 保存数据到 GitHub
+    async function adminSaveAll() {
+      const btn = document.getElementById('adminSaveBtn');
+      if (btn) { btn.disabled = true; btn.textContent = '保存中...'; }
+
+      // 先收集页面上编辑过的内容
+      collectEditedContent();
+
+      try {
+        const apiUrl = `https://api.github.com/repos/${GITHUB_DATA_REPO}/contents/${GITHUB_DATA_FILE}`;
+        const getResp = await fetch(apiUrl, {
+          headers: { 'Authorization': 'token ' + GITHUB_TOKEN }
+        });
+        const fileInfo = await getResp.json();
+        const sha = fileInfo.sha;
+
+        const content = JSON.stringify({ items: ITEMS, guideData: guideData }, null, 2);
+        const base64 = btoa(unescape(encodeURIComponent(content)));
+
+        const updateResp = await fetch(apiUrl, {
+          method: 'PUT',
+          headers: {
+            'Authorization': 'token ' + GITHUB_TOKEN,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            message: '更新网站数据 ' + new Date().toLocaleString('zh-CN'),
+            content: base64,
+            sha: sha
+          })
+        });
+
+        if (updateResp.ok) {
+          alert('✅ 保存成功！刷新页面即可看到最新内容。');
+        } else {
+          const err = await updateResp.json();
+          alert('❌ 保存失败：' + (err.message || '未知错误'));
+        }
+      } catch (e) {
+        alert('❌ 网络错误：' + e.message);
+      } finally {
+        if (btn) { btn.disabled = false; btn.textContent = '💾 保存到服务器'; }
+      }
+    }
+
+    // 收集编辑过的内容回写到数据结构
+    function collectEditedContent() {
+      // 收集攻略页的问题标题和答案
+      if (currentGuide && guideData[currentGuide]) {
+        const guide = guideData[currentGuide];
+        const tasks = guide.tasks || guide.steps || [];
+        const extraSections = guide.sections || [];
+        const listGrid = guide.listGrid || [];
+        const articleSections = [
+          ...listGrid.map(g => ({ title: g[0], points: g[1] || [] })),
+          ...tasks.map(s => ({ title: s[0], points: normalizePoints(s[1]) })),
+          ...extraSections.map(s => ({ title: s[0], points: s[1] || [] }))
+        ];
+
+        articleSections.forEach((block, idx) => {
+          const titleEl = document.querySelector(`#article-section-${idx} .question-text`);
+          if (titleEl && titleEl.textContent.trim() !== block.title) {
+            // 更新标题
+            if (idx < listGrid.length) {
+              listGrid[idx][0] = titleEl.textContent.trim();
+            } else if (idx < listGrid.length + tasks.length) {
+              tasks[idx - listGrid.length][0] = titleEl.textContent.trim();
+            } else {
+              extraSections[idx - listGrid.length - tasks.length][0] = titleEl.textContent.trim();
+            }
+          }
+
+          // 收集答案
+          const answerTextEl = document.querySelector(`#article-section-${idx} .answer-text`);
+          const answerListEls = document.querySelectorAll(`#article-section-${idx} .answer-list li span:last-child`);
+
+          if (answerTextEl && answerTextEl.textContent.trim() !== (Array.isArray(block.points) ? block.points[0] : block.points)) {
+            const newPoints = [answerTextEl.textContent.trim()];
+            if (idx < listGrid.length) {
+              listGrid[idx][1] = newPoints;
+            } else if (idx < listGrid.length + tasks.length) {
+              tasks[idx - listGrid.length][1] = newPoints[0];
+            } else {
+              extraSections[idx - listGrid.length - tasks.length][1] = newPoints;
+            }
+          } else if (answerListEls.length > 0) {
+            const newPoints = Array.from(answerListEls).map(el => el.textContent.trim());
+            if (idx < listGrid.length) {
+              listGrid[idx][1] = newPoints;
+            } else if (idx < listGrid.length + tasks.length) {
+              tasks[idx - listGrid.length][1] = newPoints;
+            } else {
+              extraSections[idx - listGrid.length - tasks.length][1] = newPoints;
+            }
+          }
+        });
+      }
+
+      // 收集详情弹窗中的编辑（如果打开了的话）
+      const detailDialog = document.getElementById('detailDialog');
+      if (detailDialog && detailDialog.open) {
+        const detailTitle = document.getElementById('detailTitle');
+        if (detailTitle && detailTitle.dataset.itemId) {
+          const item = ITEMS.find(i => i.id === detailTitle.dataset.itemId);
+          if (item) {
+            item.title = detailTitle.textContent.trim();
+            const blocks = detailDialog.querySelectorAll('.info-block');
+            blocks.forEach(block => {
+              const h4 = block.querySelector('h4');
+              const p = block.querySelector('p');
+              const ul = block.querySelector('ul');
+              if (h4 && p) {
+                const label = h4.textContent.trim();
+                if (label === '直接答案') item.answer = p.textContent.trim();
+                else if (label === '说明') item.detail = p.textContent.trim();
+                else if (label === '注意') {
+                  // tips 是数组
+                } 
+              }
+            });
+          }
+        }
+      }
+    }
+
+    // 校徽点击5次进入管理员登录
+    document.getElementById('adminEmblem').addEventListener('click', function() {
+      emblemClickCount++;
+      if (emblemClickTimer) clearTimeout(emblemClickTimer);
+      emblemClickTimer = setTimeout(() => { emblemClickCount = 0; }, 2000);
+      if (emblemClickCount >= 5) {
+        emblemClickCount = 0;
+        showAdminLogin();
+      }
+    });
+
+    // 显示管理员密码输入框
+    function showAdminLogin() {
+      const overlay = document.createElement('div');
+      overlay.className = 'admin-pw-overlay';
+      overlay.id = 'adminPwOverlay';
+      overlay.innerHTML = `
+        <div class="admin-pw-box">
+          <h3>🔑 管理员登录</h3>
+          <input type="password" id="adminPwInput" placeholder="输入管理密码" autocomplete="off" />
+          <button class="confirm-btn" onclick="confirmAdminLogin()">进入编辑模式</button>
+          <button class="cancel-btn" onclick="closeAdminLogin()">取消</button>
+          <div class="err" id="adminPwErr"></div>
+        </div>
+      `;
+      document.body.appendChild(overlay);
+      setTimeout(() => document.getElementById('adminPwInput').focus(), 50);
+      document.getElementById('adminPwInput').addEventListener('keydown', e => {
+        if (e.key === 'Enter') confirmAdminLogin();
+      });
+    }
+
+    function closeAdminLogin() {
+      const ov = document.getElementById('adminPwOverlay');
+      if (ov) ov.remove();
+    }
+
+    function confirmAdminLogin() {
+      const input = document.getElementById('adminPwInput');
+      const err = document.getElementById('adminPwErr');
+      if (input.value === ADMIN_PASSWORD) {
+        closeAdminLogin();
+        enterAdminMode();
+      } else {
+        err.textContent = '密码错误，请重试';
+        input.value = '';
+        input.focus();
+      }
+    }
+
+    // 进入管理员编辑模式
+    function enterAdminMode() {
+      isAdminMode = true;
+      document.body.classList.add('admin-mode');
+
+      // 添加顶部管理栏
+      const bar = document.createElement('div');
+      bar.className = 'admin-bar';
+      bar.id = 'adminBar';
+      bar.innerHTML = `
+        <span>📝 编辑模式</span>
+        <button id="adminSaveBtn" onclick="adminSaveAll()">💾 保存到服务器</button>
+        <button class="exit-btn" onclick="exitAdminMode()">退出编辑</button>
+      `;
+      document.body.appendChild(bar);
+
+      // 让可编辑元素可编辑
+      enableEditing();
+      renderAll();
+      setTimeout(enableEditing, 100);
+    }
+
+    function exitAdminMode() {
+      isAdminMode = false;
+      document.body.classList.remove('admin-mode');
+      const bar = document.getElementById('adminBar');
+      if (bar) bar.remove();
+      disableEditing();
+      renderAll();
+    }
+
+    function enableEditing() {
+      // 攻略页的问题标题
+      document.querySelectorAll('.question-text').forEach(el => {
+        el.setAttribute('contenteditable', 'true');
+        el.setAttribute('data-editable', 'true');
+      });
+      // 攻略页的答案文本
+      document.querySelectorAll('.answer-text').forEach(el => {
+        el.setAttribute('contenteditable', 'true');
+        el.setAttribute('data-editable', 'true');
+      });
+      // 攻略页的答案列表项
+      document.querySelectorAll('.answer-list li span:last-child').forEach(el => {
+        el.setAttribute('contenteditable', 'true');
+        el.setAttribute('data-editable', 'true');
+      });
+      // 攻略页额外板块的标题和列表
+      document.querySelectorAll('.guide-block h3').forEach(el => {
+        el.setAttribute('contenteditable', 'true');
+        el.setAttribute('data-editable', 'true');
+      });
+      document.querySelectorAll('.guide-block li').forEach(el => {
+        el.setAttribute('contenteditable', 'true');
+        el.setAttribute('data-editable', 'true');
+      });
+      // 攻略页提示语
+      document.querySelectorAll('.article-note').forEach(el => {
+        el.setAttribute('contenteditable', 'true');
+        el.setAttribute('data-editable', 'true');
+      });
+      // 攻略标题
+      const guideTitle = document.getElementById('guideTitle');
+      if (guideTitle) {
+        guideTitle.setAttribute('contenteditable', 'true');
+        guideTitle.setAttribute('data-editable', 'true');
+      }
+      // 首页卡片标题和答案
+      document.querySelectorAll('.qa-card h3').forEach(el => {
+        el.setAttribute('contenteditable', 'true');
+        el.setAttribute('data-editable', 'true');
+      });
+      document.querySelectorAll('.qa-card p').forEach(el => {
+        el.setAttribute('contenteditable', 'true');
+        el.setAttribute('data-editable', 'true');
+      });
+      // 详情弹窗标题
+      const detailTitle = document.getElementById('detailTitle');
+      if (detailTitle) {
+        detailTitle.setAttribute('contenteditable', 'true');
+        detailTitle.setAttribute('data-editable', 'true');
+      }
+      // 详情弹窗内容
+      document.querySelectorAll('#detailBody .info-block p').forEach(el => {
+        el.setAttribute('contenteditable', 'true');
+        el.setAttribute('data-editable', 'true');
+      });
+    }
+
+    function disableEditing() {
+      document.querySelectorAll('[data-editable]').forEach(el => {
+        el.removeAttribute('contenteditable');
+        el.removeAttribute('data-editable');
+      });
+    }
+
+    // 修改 openDetail 以支持编辑
+    const originalOpenDetail = openDetail;
+    openDetail = function(id) {
+      originalOpenDetail(id);
+      if (isAdminMode) {
+        const detailTitle = document.getElementById('detailTitle');
+        if (detailTitle) detailTitle.dataset.itemId = id;
+        setTimeout(enableEditing, 50);
+      }
+    };
+
+    initAccessGate();
+    // 先渲染页面（用默认数据），再异步加载 GitHub 数据
+    renderAll();
+    (async () => {
+      const ok = await loadRemoteData();
+      if (ok) renderAll();
+    })();
+  </script>
+</body>
+</html>

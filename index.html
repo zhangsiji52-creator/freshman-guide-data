@@ -2333,6 +2333,7 @@
             "valid": "官方文件，2026年最新版。"
       }
 ];
+    const sourceMap = new Map(SOURCES.map(s => [s.id, s]));
     const suggestions = ["宿舍", "刷白", "北区3号楼", "南区公寓", "消防窗", "电费", "吹风机", "校园网", "电话卡", "图书馆", "选课", "防诈骗", "食堂", "东澜岸"];
     const categories = ["全部", ...new Set(ITEMS.map(i => i.category))];
     const guideData = {
@@ -4122,6 +4123,6 @@
       if (ok) renderAll();
     })();
   </script>
-  <div style="text-align:center;padding:8px 0 4px;font-size:11px;color:#bbb;background:var(--bg)">页面版本 v20260730.3 · 更新于2026-07-30</div>
+  <div style="text-align:center;padding:8px 0 4px;font-size:11px;color:#bbb;background:var(--bg)">页面版本 v20260730.4 · 更新于2026-07-30</div>
 </body>
 </html>
